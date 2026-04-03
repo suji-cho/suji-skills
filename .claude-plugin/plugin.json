@@ -1,8 +1,0 @@
-{
-  "name": "suji-skills",
-  "description": "Custom Claude Code skills for project documentation, Confluence publishing, weekly reporting, and BM sync workflows.",
-  "version": "1.0.0",
-  "author": {
-    "name": "suji-cho"
-  }
-}
