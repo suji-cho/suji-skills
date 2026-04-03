@@ -62,7 +62,8 @@ Brief 저장 경로: `projects/{scope}/{project}/{slug}/brief.md`
 
 ### Step 3: Brief 등급 판정
 
-대화 내용을 기반으로 등급을 판정한다:
+대화 내용을 기반으로 Full 7섹션(배경/의사결정/수행내용/성과/다음단계/회고/콘텐츠시드) 내용을 먼저 작성하여 사용자에게 보여준다.
+사용자가 내용을 보고 등급을 결정한다:
 
 | 등급 | 기준 |
 |------|------|
@@ -71,8 +72,6 @@ Brief 저장 경로: `projects/{scope}/{project}/{slug}/brief.md`
 | **Meta** | 메시지 5개 미만이고 실질 내용 없음 |
 
 핵심 규칙: **내용 성격**으로 판단. 짧더라도 "이 방향으로 가자"는 결정이 있으면 Full.
-
-등급을 사용자에게 제안하고 확인받는다.
 
 등급 검증: frontmatter 작성 시 Light/Meta인데 decisions가 있으면 사용자에게 Full 승격 여부를 확인한다.
 
@@ -87,7 +86,7 @@ Brief 저장 경로: `projects/{scope}/{project}/{slug}/brief.md`
 
 예시: `2026-04-01-KB-시스템-설계`, `2026-03-27-MDX-원본-복원`
 
-사용자에게 slug를 제안하고 확인받는다.
+slug는 사용자에게 묻지 않고 자율 생성하여 바로 적용한다.
 
 ### Step 5: Brief 생성
 
