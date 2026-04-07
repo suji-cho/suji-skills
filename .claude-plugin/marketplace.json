@@ -1,31 +1,16 @@
 {
   "name": "suji-skills",
+  "description": "Custom Claude Code skills for Confluence publishing, weekly reporting, BM sync, and project documentation",
   "owner": {
     "name": "Suji Cho",
     "email": "waterland.cho@gmail.com"
-  },
-  "metadata": {
-    "description": "Custom Claude Code skills for Confluence publishing, weekly reporting, BM sync, and project documentation",
-    "version": "1.0.0"
   },
   "plugins": [
     {
       "name": "suji-skills",
       "description": "Confluence publishing, CTO weekly report, BM sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/suji-bm-sync",
-        "./skills/suji-claude-guide",
-        "./skills/suji-confluence-publish",
-        "./skills/suji-cto-weekly-report",
-        "./skills/suji-daily-mbo",
-        "./skills/suji-doc-structure",
-        "./skills/suji-kb",
-        "./skills/suji-meeting-refine",
-        "./skills/suji-reflect",
-        "./skills/suji-report"
-      ]
+      "version": "1.0.0",
+      "source": "./"
     }
   ]
 }
