@@ -1,0 +1,16 @@
+{
+  "name": "suji-skills",
+  "version": "1.0.0",
+  "description": "Confluence publishing, CTO weekly report, BM sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
+  "author": {
+    "name": "Suji Cho",
+    "email": "waterland.cho@gmail.com"
+  },
+  "keywords": [
+    "confluence",
+    "reporting",
+    "knowledge-base",
+    "productivity"
+  ],
+  "license": "MIT"
+}
