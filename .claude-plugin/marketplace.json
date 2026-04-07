@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "suji-skills",
-      "description": "Confluence publishing, CTO weekly report, BM sync, project doc structure, Claude Code guide",
+      "description": "Confluence publishing, CTO weekly report, BM sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
       "source": "./",
       "strict": false,
       "skills": [
@@ -19,7 +19,12 @@
         "./skills/suji-claude-guide",
         "./skills/suji-confluence-publish",
         "./skills/suji-cto-weekly-report",
-        "./skills/suji-doc-structure"
+        "./skills/suji-daily-mbo",
+        "./skills/suji-doc-structure",
+        "./skills/suji-kb",
+        "./skills/suji-meeting-refine",
+        "./skills/suji-reflect",
+        "./skills/suji-report"
       ]
     }
   ]
