@@ -25,10 +25,11 @@ Bases 월간요약.base (실시간 대시보드)
 ## 설정
 
 ```
-DAILY_PATH=~/Workspace/obsidian/daily
-TEMPLATE_PATH=$DAILY_PATH/_template_daily.md
-MONTHLY_TODO_PATH=~/Workspace/obsidian/todo/work
-PROJECT_TODO_PATH=~/Workspace/work/todo
+DAILY_BASE=~/Workspace/work/work_minutes/2026/daily_task
+DAILY_PATH=$DAILY_BASE/YYYY Mon          # 월별 서브폴더 (예: "2026 Apr")
+MONTHLY_TODO_PATH=~/Workspace/work/work_minutes/2026/monthly_task
+PROJECT_TODO_PATH=~/Workspace/work/project_todo
+REVIEW_PATH=~/Workspace/work/work_minutes/2026/ERP 공수 월별 리포트
 ```
 
 ## ERP 작업유형 (띄어쓰기 정확, 변경 불가)
@@ -53,7 +54,8 @@ PROJECT_TODO_PATH=~/Workspace/work/todo
 
 ## 데일리 노트 포맷
 
-파일: `obsidian/daily/yyyymmdd.md`
+파일: `work/work_minutes/2026/daily_task/YYYY Mon/yyyymmdd.md`
+예시: `work/work_minutes/2026/daily_task/2026 Apr/20260408.md`
 
 ```markdown
 ---
@@ -81,19 +83,33 @@ projects: []
 - 작업공수 비어있음 = 할일 (미완료)
 - 작업공수 채워짐 = 한일 (완료)
 - 작업유형은 반드시 위 ERP 목록 중 하나 사용
+- 월별 서브폴더: `2026 Jan`, `2026 Feb`, ... `2026 Apr`
+
+## 기존 Notion 데이터
+
+Notion에서 가져온 데일리 노트는 월별 폴더에 `Nth, Mon.md` 형식으로 존재 (예: `1st, Apr.md`).
+테이블 헤더: `| 공수 | 유형 | 내용 |` (ERP 컬럼명과 다름).
+새로 생성하는 노트만 ERP 컬럼명(`작업공수`, `작업유형`, `작업내용`) 사용.
+review 시 두 포맷 모두 파싱 가능해야 함.
 
 ## 워크플로우
 
 ### `/suji-daily-mbo` — 아침 호출
 
-1. **날짜 확인**: 오늘 `yyyymmdd`
-2. **파일 존재 확인**: `obsidian/daily/yyyymmdd.md`
+1. **날짜 확인**: 오늘 `yyyymmdd`, 월 폴더명 결정 (예: `2026 Apr`)
+2. **파일 존재 확인**: `work/work_minutes/2026/daily_task/YYYY Mon/yyyymmdd.md`
    - 없으면 → 템플릿에서 생성 (date, 제목 치환)
    - 있으면 → 읽기
 3. **할일 자동 수집**:
    - 어제 데일리 노트에서 작업공수 비어있는 행 (캐리오버)
-   - 현재 월간 TODO (`obsidian/todo/work/YYYY Mon TODO.md`) 미완료 항목
-   - 프로젝트 카드 (`work/todo/*.md`, done/ 제외) 미완료 항목
+   - 현재 월간 TODO (`work/work_minutes/2026/monthly_task/YYYY Mon TODO.md`) 미완료 항목
+   - 프로젝트 카드 (`work/project_todo/*.md`, done/ 제외) 미완료 항목
+3.5. **의존성 상태 확인**:
+   - `~/Workspace/work/scripts/dep-check-output.json` 읽기 (없으면 스킵)
+   - 수집된 프로젝트 카드에 어노테이션 추가:
+     - 🟢 Ready — 의존성 없거나 모두 완료, 바로 착수 가능
+     - 🔴 Blocked (← reason) — 선행 작업 미완료
+   - Step 4 정렬: 🟢 Ready 먼저, 🔴 Blocked 하단
 4. **수집 결과 보여주기**: 테이블 형태로 후보 제시
 5. **사용자 선택**: 오늘 할일 선택
 6. **변경 내용 보여주고 승인 후 저장**
@@ -119,8 +135,10 @@ projects: []
 ### `/suji-daily-mbo review` — 월별 취합
 
 1. **기간 결정**: 인자 없으면 이번 달, `2026-03` 형식이면 해당 월
-2. **해당 월 데일리 노트 전체 읽기**: `obsidian/daily/yyyymm*.md` glob
+2. **해당 월 데일리 노트 전체 읽기**: `work/work_minutes/2026/daily_task/YYYY Mon/*.md` glob
 3. **테이블 파싱**: 각 파일에서 작업공수 채워진 행 추출
+   - 새 포맷: `| 작업공수 | 작업유형 | 작업내용 |`
+   - Notion 포맷: `| 공수 | 유형 | 내용 |`
 4. **취합 리스트 생성**:
 
 ```markdown
@@ -140,22 +158,22 @@ projects: []
 ```
 
 5. **미입력 영업일 경고**: 해당 월에 데일리 노트가 없는 평일 목록
-6. **파일 저장**: `obsidian/daily/yyyymm_월간요약.md`에 저장
+6. **파일 저장**: `work/work_minutes/2026/ERP 공수 월별 리포트/yyyymm_월간요약.md`에 저장
 7. **변경 내용 보여주고 승인 후 저장**
 
 ## 테이블 파싱 규칙
 
 마크다운 테이블에서 데이터 추출 시:
-1. `| 작업공수 | 작업유형 | 작업내용 |` 헤더행 찾기
+1. 헤더행 찾기: `| 작업공수 |` 또는 `| 공수 |`
 2. 구분선(`|---|---|---|`) 건너뛰기
 3. 데이터 행 파싱: `|` 기준 split → trim
-4. 작업공수가 빈 문자열이면 미완료 (할일)
-5. 작업공수가 숫자면 완료 (한일)
+4. 작업공수/공수가 빈 문자열이면 미완료 (할일)
+5. 작업공수/공수가 숫자면 완료 (한일)
 
 ## 관련
 
 - `/suji-report`: KB briefs 기반 성과 리포트 (이 스킬의 데이터를 참조 가능)
 - `/suji-meeting-refine`: 회의록 정리 (회의 항목의 작업내용과 연결)
-- `obsidian/todo/work/`: 월간 TODO (할일 수집 소스)
-- `work/todo/`: 프로젝트 태스크 카드 (할일 수집 소스)
-- `obsidian/daily/월간요약.base`: Bases 실시간 대시보드
+- `work/work_minutes/2026/monthly_task/`: 월간 TODO (할일 수집 소스)
+- `work/project_todo/`: 프로젝트 태스크 카드 (할일 수집 소스)
+- `work/work_minutes/2026/ERP 공수 월별 리포트/월간요약.base`: Bases 실시간 대시보드

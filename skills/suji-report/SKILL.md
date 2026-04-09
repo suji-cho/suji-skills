@@ -39,7 +39,7 @@ CEO Plan: `~/.gstack/projects/suji-cho-sujicho-kb/ceo-plans/2026-04-02-knowledge
 ```
 KB_PATH=~/Workspace/sujicho-kb
 DB_PATH=$KB_PATH/index.db
-DRAFTS_PATH=~/work/drafts
+DRAFTS_PATH=~/Workspace/work/drafts
 
 CONFLUENCE_CLOUD=hancom.atlassian.net
 CONFLUENCE_SPACE=~suji.cho
@@ -108,7 +108,15 @@ ORDER BY severity DESC, date DESC;
 
 - Memory: 프로젝트 맥락, 진행 중 이슈
 - Git log: `git log --since=:start --until=:end --oneline` (주요 커밋)
-- ~/work/: drafts/, research/ 내 해당 기간 파일
+- ~/Workspace/work/: drafts/, research/ 내 해당 기간 파일
+
+**3-5. Task Pipeline (dep-check)**
+
+`~/Workspace/work/scripts/dep-check-output.json` 읽기 (없으면 스킵).
+리포트에 "## Task Pipeline" 섹션 추가용 데이터:
+- ready / blocked / backlog / done 건수
+- 의존성 체인 시각화
+- blocked 항목의 사유
 
 ### Step 4: 리포트 생성
 
@@ -133,6 +141,18 @@ ORDER BY severity DESC, date DESC;
 
 (프로젝트별 반복)
 
+## Task Pipeline
+(dep-check-output.json이 있을 경우 포함, 없으면 섹션 생략)
+
+| 상태 | 건수 |
+|------|-----|
+| 🟢 Ready | {n} |
+| 🔴 Blocked | {n} |
+| ⏳ Backlog | {n} |
+| ✅ Done | {n} |
+
+의존성 체인: {chains에서 추출, 예: agency_research → openclaw_infra → activation_dashboard}
+
 ## 인사이트
 (insights 테이블 미처리 건 + 이번 리포트에서 새로 발견한 패턴)
 
@@ -156,9 +176,9 @@ ORDER BY severity DESC, date DESC;
 3개 파일 동시 저장:
 
 ```
-~/work/drafts/yyyymmdd_업무성과리포트_W{nn}.md
-~/work/drafts/yyyymmdd_업무성과리포트_{MM}월.md
-~/work/drafts/yyyymmdd_업무성과리포트_{Q}분기.md
+~/Workspace/work/drafts/yyyymmdd_업무성과리포트_W{nn}.md
+~/Workspace/work/drafts/yyyymmdd_업무성과리포트_{MM}월.md
+~/Workspace/work/drafts/yyyymmdd_업무성과리포트_{Q}분기.md
 ```
 
 - `yyyymmdd`는 해당 기간의 **시작일**
@@ -228,6 +248,6 @@ WHERE id IN (:included_ids);
 
 - 수동 호출 시 리포트 초안은 반드시 사용자에게 보여주고 확인받을 것
 - 콘텐츠(텍스트/수치/강조점) 사용자 확인 없이 변경 불가 (수동 호출 시)
-- 파일 저장 시 `~/work/drafts/` + `yyyymmdd_제목.md` 컨벤션 준수
+- 파일 저장 시 `~/Workspace/work/drafts/` + `yyyymmdd_제목.md` 컨벤션 준수
 - Confluence 레이아웃: 500px 중앙 + 테이블 왼쪽 정렬 필수
 - 데이터가 없는 기간은 "데이터 없음" 명시, 빈 리포트도 생성
