@@ -104,12 +104,6 @@ review 시 두 포맷 모두 파싱 가능해야 함.
    - 어제 데일리 노트에서 작업공수 비어있는 행 (캐리오버)
    - 현재 월간 TODO (`work/work_minutes/2026/monthly_task/YYYY Mon TODO.md`) 미완료 항목
    - 프로젝트 카드 (`work/project_todo/*.md`, done/ 제외) 미완료 항목
-3.5. **의존성 상태 확인**:
-   - `~/Workspace/work/scripts/dep-check-output.json` 읽기 (없으면 스킵)
-   - 수집된 프로젝트 카드에 어노테이션 추가:
-     - 🟢 Ready — 의존성 없거나 모두 완료, 바로 착수 가능
-     - 🔴 Blocked (← reason) — 선행 작업 미완료
-   - Step 4 정렬: 🟢 Ready 먼저, 🔴 Blocked 하단
 4. **수집 결과 보여주기**: 테이블 형태로 후보 제시
 5. **사용자 선택**: 오늘 할일 선택
 6. **변경 내용 보여주고 승인 후 저장**
