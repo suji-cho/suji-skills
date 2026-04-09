@@ -1,11 +1,11 @@
 ---
 name: suji-kb
-description: Claude Code 세션을 KB에 아카이브하고 brief를 생성합니다. 세션 종료 시 '/suji-kb', 세션 중 산출물 경로 확정 시 '/suji-kb init', 미처리 세션 일괄 처리 시 '/suji-kb brief', KB 검색 시 '/suji-kb search <키워드>'를 사용합니다.
+description: Claude Code 세션 아카이브 + wiki 통합 Knowledge Base. 세션 종료 '/suji-kb', 산출물 경로 '/suji-kb init', 일괄 logbook '/suji-kb logbook', 검색 '/suji-kb search', 소스 투입 '/suji-kb ingest', wiki 질의 '/suji-kb query', wiki 점검 '/suji-kb lint'.
 ---
 
 # suji-kb
 
-Claude Code 세션을 `~/Workspace/sujicho-kb/`에 아카이브하고 구조화된 brief를 생성하는 통합 스킬.
+Claude Code 세션을 `~/Workspace/sujicho-kb/`에 아카이브하고 구조화된 logbook을 생성하는 통합 스킬.
 
 설계 문서: `~/Workspace/sujicho-kb/design.md`
 
@@ -13,10 +13,13 @@ Claude Code 세션을 `~/Workspace/sujicho-kb/`에 아카이브하고 구조화�
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/suji-kb` | 세션 종료: archive + 분류 + brief + commit |
+| `/suji-kb` | 세션 종료: archive + 분류 + logbook + commit |
 | `/suji-kb init` | 세션 중: 프로젝트 선택 + 산출물 경로 확정 |
-| `/suji-kb brief` | 미처리 세션 일괄 triage + brief |
+| `/suji-kb logbook` | 미처리 세션 일괄 triage + logbook |
 | `/suji-kb search <키워드>` | SQLite FTS 검색 |
+| `/suji-kb ingest <파일>` | 소스 투입 → wiki 페이지 생성/갱신 |
+| `/suji-kb query <질문>` | wiki + SQLite 기반 답변 |
+| `/suji-kb lint` | wiki 건강 점검 |
 
 ## 설정
 
@@ -50,7 +53,7 @@ python3 ~/Workspace/sujicho-kb/scripts/session-archive.py
 
 scope 판단 기준: 회사 업무(ODL, Confluence, 시장분석 등) = work, 개인 프로젝트(포트폴리오, KB 등) = personal. tooling/logbook은 세션 맥락으로 판단.
 
-Brief 저장 경로: `projects/{scope}/{project}/{slug}/brief.md`
+Logbook 저장 경로: `projects/{scope}/{project}/{slug}/logbook.md`
 
 출력 형식:
 ```
@@ -60,7 +63,7 @@ Brief 저장 경로: `projects/{scope}/{project}/{slug}/brief.md`
 
 새 프로젝트가 필요하면 사용자에게 이름과 scope를 물어본다.
 
-### Step 3: Brief 등급 판정
+### Step 3: Logbook 등급 판정
 
 대화 내용을 기반으로 Full 7섹션(배경/의사결정/수행내용/성과/다음단계/회고/콘텐츠시드) 내용을 먼저 작성하여 사용자에게 보여준다.
 사용자가 내용을 보고 등급을 결정한다:
@@ -88,9 +91,9 @@ Brief 저장 경로: `projects/{scope}/{project}/{slug}/brief.md`
 
 slug는 사용자에게 묻지 않고 자율 생성하여 바로 적용한다.
 
-### Step 5: Brief 생성
+### Step 5: Logbook 생성
 
-**Full Brief** — 7섹션:
+**Full Logbook** — 7섹션:
 
 ```markdown
 ---
@@ -158,7 +161,7 @@ publishable: {true|false|redact}       # 외부 공개 가능 여부
 
 **frontmatter는 모든 등급에서 동일.** 해당하는 필드만 기재하고, 해당 없으면 생략한다. 등급은 본문 깊이만 결정한다.
 
-**Light Brief** — 한 줄 요약 + 변경 목록:
+**Light Logbook** — 한 줄 요약 + 변경 목록:
 
 ```markdown
 ---
@@ -184,11 +187,11 @@ grade: meta
 ---
 ```
 
-Brief는 **현재 대화 맥락에서 직접 생성**한다. session.md를 다시 읽어서 요약하지 않는다.
+Logbook은 **현재 대화 맥락에서 직접 생성**한다. session.md를 다시 읽어서 요약하지 않는다.
 
-session-archive.py가 생성한 session.md의 frontmatter(tokens, cost 등)를 읽어 brief frontmatter에 상속한다.
+session-archive.py가 생성한 session.md의 frontmatter(tokens, cost 등)를 읽어 logbook frontmatter에 상속한다.
 
-Brief 작성 가이드라인:
+Logbook 작성 가이드라인:
 - Jira/Confluence 업로드 가능한 품질
 - 특정 인물 언급 금지 — 구조적/기술적 맥락으로만 서술
 - 개인 감정, 불만, 조직 내부 갈등 포함 금지
@@ -196,7 +199,7 @@ Brief 작성 가이드라인:
 - 성과 섹션에 가능한 한 정량적 수치 포함
 - 일반적 요약이 아니라 구체적 의사결정과 산출물 기술
 
-Brief 초안을 사용자에게 보여주고 확인받는다.
+Logbook 초안을 사용자에게 보여주고 확인받는다.
 
 ### Step 6: 산출물 수집
 
@@ -205,7 +208,7 @@ init에서 경로를 선언한 경우 해당 폴더를 스캔한다.
 
 ```
 📎 이 세션에서 생성한 파일:
-  ✅ kb/projects/.../brief.md (KB 안)
+  ✅ kb/projects/.../logbook.md (KB 안)
   ❓ ./research-notes.md (KB 밖 — 포함할까요?)
 ```
 
@@ -220,7 +223,7 @@ python3 ~/Workspace/sujicho-kb/scripts/build-index.py
 ```bash
 cd ~/Workspace/sujicho-kb
 git add sessions/ projects/ logbook/ scripts/ triage.yml
-git commit -m "kb: {project}/{slug} — {brief title}"
+git commit -m "kb: {project}/{slug} — {logbook title}"
 git push
 ```
 
@@ -232,7 +235,7 @@ remote가 설정되지 않았으면 push 건너뛴다.
 ```
 ✅ suji-kb 완료
   📄 session: sessions/2026-04-01-{uuid}.md
-  📝 brief: projects/{scope}/{project}/{slug}/brief.md
+  📝 logbook: projects/{scope}/{project}/{slug}/logbook.md
   📎 산출물: (있으면 나열)
   💰 비용: ${cost} (input: {n}K, output: {n}K)
   🔗 committed (pushed / no remote)
@@ -256,10 +259,10 @@ mkdir -p ~/Workspace/sujicho-kb/projects/{scope}/{project}/{YYYY-MM-DD-slug}
 
 이후 세션에서 산출물 저장 시 이 경로를 사용한다.
 
-## /suji-kb brief — 미처리 세션 일괄 처리
+## /suji-kb logbook — 미처리 세션 일괄 처리
 
 1. `sessions/`에서 모든 session_id 스캔
-2. `projects/**/brief.md` + `logbook/**/brief.md`에서 처리된 session_id 스캔
+2. `projects/**/logbook.md` + `logbook/**/logbook.md`에서 처리된 session_id 스캔
 3. `triage.yml`에서 이전 분류 결과 로드 → 판정된 세션 스킵
 4. 미처리 세션 목록을 등급 추천과 함께 테이블로 제시:
 
@@ -271,7 +274,7 @@ mkdir -p ~/Workspace/sujicho-kb/projects/{scope}/{project}/{YYYY-MM-DD-slug}
 ```
 
 5. 사용자 확인 후:
-   - Full/Light → brief 생성 (Step 5와 동일, 단 session.md를 읽어서 생성)
+   - Full/Light → logbook 생성 (Step 5와 동일, 단 session.md를 읽어서 생성)
    - Meta → frontmatter만 생성
    - Skip → triage.yml에 `decision: skipped` 기록
 
@@ -284,7 +287,7 @@ mkdir -p ~/Workspace/sujicho-kb/projects/{scope}/{project}/{YYYY-MM-DD-slug}
   turns: 233
   topic: "리더 요구사항 분석"
   grade: full
-  decision: briefed
+  decision: logged
   decided_at: "2026-04-02"
 ```
 
@@ -309,4 +312,115 @@ conn.close()
 "
 ```
 
-검색 결과에서 관련 session.md 또는 brief.md를 읽어 상세 내용을 제공한다.
+검색 결과에서 관련 session.md 또는 logbook.md를 읽어 상세 내용을 제공한다.
+
+## /suji-kb ingest <파일> — 소스 투입 + wiki 페이지 생성
+
+외부 소스를 KB에 투입하고 wiki 페이지를 생성/갱신한다.
+
+### 소스 투입
+
+1. 파일 위치에 따라 처리:
+   - `~/Workspace/Clippings/` (Obsidian Web Clipper inbox): `raw/sources/`로 복사
+   - `raw/sources/` 안에 이미 있음: 복사 스킵
+   - `sessions/*.md`: 복사하지 않고 직접 참조
+   - 기타 경로: `raw/sources/`로 복사
+
+2. `raw/sources/`에 복사할 때 파일명 규칙: `{YYYY-MM-DD}_{제목}.{ext}` (이미 이 형식이면 그대로)
+
+Clippings/ = Obsidian Web Clipper가 브라우저에서 자동 저장하는 inbox.
+raw/sources/ = ingest 처리 완료된 소스 보관소.
+
+### wiki 페이지 생성
+
+1. 소스를 읽는다.
+2. 사용자와 핵심 내용을 논의한다.
+3. 기존 wiki 페이지와 관련 있는지 `wiki/index.md`를 읽어 확인한다.
+   - 관련 페이지 있음 → 기존 페이지에 내용 추가/갱신
+   - 관련 페이지 없음 → 새 페이지 생성
+4. wiki 페이지 frontmatter:
+
+```yaml
+---
+tags: [tag1, tag2]
+scope: work | personal
+date: YYYY-MM-DD
+sources: [raw/sources/파일명]  # 또는 sessions/파일명.md
+---
+```
+
+5. 관련 페이지 전체에 `[[교차참조]]` 추가/갱신한다.
+6. `wiki/index.md`를 갱신한다.
+7. `wiki/log.md`에 엔트리 추가:
+
+```
+## [YYYY-MM-DD] ingest | {제목}
+
+- 소스: raw/sources/{파일명}
+- 생성/갱신: [[페이지명]]
+- 교차참조 추가: [[관련1]], [[관련2]]
+```
+
+8. 인덱스 갱신 + commit & push.
+
+## /suji-kb query <질문> — wiki 기반 답변
+
+KB 지식을 활용하여 질문에 답변한다.
+
+1. `wiki/index.md`를 읽어 관련 페이지를 찾는다.
+2. 관련 페이지를 읽고 답변을 합성한다. 출처를 명시한다.
+3. SQLite FTS 검색도 병행하여 logbook/session에서 추가 근거를 찾는다:
+
+```bash
+python3 -c "
+import sqlite3
+conn = sqlite3.connect('$HOME/Workspace/sujicho-kb/index.db')
+rows = conn.execute(
+    \"SELECT date, title, path, snippet(kb_fts, 5, '>>>', '<<<', '...', 30) FROM kb_fts WHERE kb_fts MATCH ? ORDER BY rank LIMIT 10\",
+    ('KEYWORD',)
+).fetchall()
+for r in rows:
+    print(f'{r[0]} | {r[1][:50]} | {r[2]}')
+    print(f'  {r[3][:200]}')
+conn.close()
+"
+```
+
+4. 답변이 새로운 분석/비교/인사이트를 포함하면 사용자에게 wiki 페이지로 저장할지 제안한다.
+
+## /suji-kb lint — wiki 건강 점검
+
+위키 전체를 점검하고 문제를 보고한다.
+
+### 점검 항목
+
+1. **깨진 링크**: `[[Page Name]]`이 실제 wiki/ 파일과 매칭되지 않는 것
+2. **고아 페이지**: 다른 페이지에서 링크되지 않는 페이지 (index.md 제외)
+3. **모순**: 페이지 간 상충하는 주장/수치
+4. **노후화**: sources 날짜가 오래된 페이지, 시제가 맞지 않는 서술
+5. **누락 교차참조**: 같은 주제를 다루는데 서로 링크가 없는 페이지
+6. **누락 페이지**: 여러 곳에서 언급되지만 자체 페이지가 없는 개념
+
+### 실행 방식
+
+1. `wiki/` 전체 파일을 스캔한다.
+2. 발견 사항을 카테고리별로 테이블 보고한다:
+
+```
+🔍 wiki lint 결과
+
+| # | 유형 | 페이지 | 내용 |
+|---|------|--------|------|
+| 1 | 깨진 링크 | 경쟁사 지도 | [[없는 페이지]] |
+| 2 | 고아 | Claude API 사내 도입 | 인바운드 링크 0개 |
+| 3 | 노후화 | ODL 비즈니스 현황 | 기준일 2026-03-31, 8일 경과 |
+```
+
+3. 사용자 확인 후 수정 실행한다.
+4. `wiki/log.md`에 lint 엔트리 추가:
+
+```
+## [YYYY-MM-DD] lint | 위키 건강 점검 — {N}건 수정
+```
+
+5. commit & push.

@@ -1,10 +1,11 @@
-# /suji-reflect
+# suji-reflect
 
-세션 복기 스킬. 무의식적 판단을 의식적으로 분해하여 기록한다.
+세션 복기 스킬. 무의식적 판단을 의식적으로 분해하여 artifact.md + thinking.md로 기록한다.
 
-## 사용법
+## When to use
 
-아무 때나 `/suji-reflect`를 호출한다. 세션 중간이든 끝이든 상관없음.
+- "오늘 세션 복기하자", "생각 정리해줘"
+- 세션 중간이든 끝이든 아무 때나 `/suji-reflect` 호출
 
 ## 워크플로우
 
@@ -15,28 +16,47 @@
 
 ## 산출물
 
-| 파일 | 역할 |
-|------|------|
-| `artifact.md` | 이 세션에서 뭘 만들었는가 |
-| `thinking.md` | 이 세션에서 어떻게 생각했는가 (암묵지 분해) |
+| 파일 | 역할 | 내용 |
+|------|------|------|
+| `artifact.md` | 이 세션에서 뭘 만들었는가 | 산출물 목록, 변경사항, 상태 |
+| `thinking.md` | 이 세션에서 어떻게 생각했는가 | 갈림길, 선택 이유, 발견한 패턴 |
 
 ## 저장 경로
 
 ```
-~/Workspace/personal/thinking_helper/reflect/yyyymmdd_제목/
+~/Workspace/personal/project/thinking_helper/reflect/yyyymmdd_제목/
 ├── artifact.md
 └── thinking.md
 ```
 
-## 분해 방법
+## 분해 방법 (5가지)
 
-1. **거울** — 선택을 비춰주기
-2. **대비** — 두 개를 나란히 놓기
+1. **거울** — 선택을 비춰주기 ("당신은 X를 선택했는데, Y는 고려했나요?")
+2. **대비** — 두 개를 나란히 놓기 ("A안 vs B안, 뭐가 달랐나요?")
 3. **안 한 것 짚기** — 하지 않은 선택이 말해주는 것
-4. **느낌 먼저, 이유 나중에** — 직감 포착
-5. **반복 패턴 누적** — 이전 기록과 연결
+4. **느낌 먼저, 이유 나중에** — 직감 포착 ("왜 그게 찝찝했나요?")
+5. **반복 패턴 누적** — 이전 기록과 연결 ("지난번에도 같은 패턴이었어요")
+
+## Edge Cases
+
+- **판단이 거의 없는 세션** (순수 디버깅 등): artifact.md만 생성, thinking.md는 "실행 위주 세션" 한 줄
+- **하루에 여러 세션**: 폴더명 제목으로 구분
+- **여러 주제를 다룬 세션**: 갈림길을 주제별로 분리
+- **사용자가 인터뷰를 원하지 않을 때**: Claude가 세션을 복기하여 초안을 제시, 사용자가 수정
+
+## 핵심 규칙
+
+- 파일 생성 전 반드시 내용을 보여주고 승인받는다
+- 디자인/콘텐츠는 사용자 확인 없이 변경 불가
+- KB(sujicho-kb)와는 별개 시스템이다. KB는 세션 아카이브, 이것은 사고 분해
+
+## 관련 스킬
+
+| 스킬 | 관계 |
+|------|------|
+| `/suji-kb` | 세션 아카이브 (사실 기록). reflect는 사고 분해 (암묵지 추출) |
+| `/suji-daily-mbo` | 업무 시간 관리. reflect는 사고 품질 관리 |
 
 ## 관련 문서
 
-- 설계 문서: `~/Workspace/personal/thinking_helper/design/20260406_session-reflection-system.md`
-- KB(sujicho-kb)와는 별개 시스템
+- 설계 문서: `~/Workspace/personal/project/thinking_helper/design/20260406_session-reflection-system.md`

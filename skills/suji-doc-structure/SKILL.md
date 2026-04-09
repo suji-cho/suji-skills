@@ -87,7 +87,7 @@ Claude 프로젝트 체계(.claude 구조, 메모리, 스킬, 설정)에 대한 
 ~/Workspace/work/
 ├── drafts/              # [공용] Confluence 업로드용 초안 (yyyymmdd_제목.md)
 ├── research/            # [공용] 리서치 파일 (yyyymmdd_filename.ext)
-├── todo/                # [공용] 프로젝트별 작업 지시서 (01_name.md 넘버링)
+├── project_todo/        # [공용] 프로젝트별 작업 지시서 (yyyymmdd_name.md)
 ├── weekly_report/       # [공용] 주간 리포트
 │
 └── {project_name}/      # [프로젝트] 하나의 프로젝트에 속하는 모든 파일

@@ -74,3 +74,10 @@ Confluence MCP API로 현재 페이지 내용을 가져온다. 파싱 항목:
 - **신규 리드 추가**: 기존 보고서 형식에 맞춰 작성하되, 사용자에게 Priority와 BM 관점 입력 요청.
 - **Gmail 인증**: 키체인 제한으로 handoff가 필요할 수 있음.
 - **browse 셋업**: `$B` 변수는 `~/.claude/skills/gstack/browse/dist/browse` 경로 사용.
+
+## 관련 스킬
+
+| 스킬 | 관계 |
+|------|------|
+| `/suji-cto-weekly-report` | BM 보고서 데이터를 주간보고 섹션 3에 자동 투입 |
+| `/suji-confluence-publish` | Confluence 업로드 레이아웃 규칙 공유 |

@@ -50,6 +50,7 @@ Claude 프로젝트 체계(.claude 구조, 메모리, 스킬, 설정) 질문은 
 - **HANDOFF.md → 나머지 전부.** "관련 파일" 섹션에 같은 폴더의 다른 표준 문서를 링크. HANDOFF.md가 진입점.
 - **design.md → CHANGELOG.md.** 설계 변경 시 CHANGELOG.md에 기록, design.md 상단에 "Last reviewed: 날짜" 표시.
 - **TODO.md → design.md.** 할 일 항목이 설계 결정에서 파생됐다면 "출처: design.md CEO Review" 같이 근거 명시.
+- **RUNBOOK.md → STATUS.md.** 운영 절차 문서는 현재 상태 문서를 참조한다.
 
 ## 안티패턴
 
@@ -67,7 +68,7 @@ Claude 프로젝트 체계(.claude 구조, 메모리, 스킬, 설정) 질문은 
 ~/Workspace/work/
 ├── drafts/              # [공용] Confluence 업로드용 초안 (yyyymmdd_제목.md)
 ├── research/            # [공용] 리서치 파일 (yyyymmdd_filename.ext)
-├── todo/                # [공용] 프로젝트별 작업 지시서 (01_name.md 넘버링)
+├── project_todo/        # [공용] 프로젝트별 작업 지시서 (yyyymmdd_name.md)
 ├── weekly_report/       # [공용] 주간 리포트
 └── {project_name}/      # [프로젝트] 하나의 프로젝트에 속하는 모든 파일
     ├── HANDOFF.md       #   필수. 세션 이어받기 진입점.
@@ -101,3 +102,10 @@ Claude 프로젝트 체계(.claude 구조, 메모리, 스킬, 설정) 질문은 
 2. 진단 리포트 출력 (현재 단계 추정, 있는 것/없는 것/문제점/문서 간 연결 상태)
 3. 각 문제에 대해 수정 제안 (이름 + 뉘앙스 표시)
 4. 사용자 확인 후 적용
+
+## 관련 스킬
+
+| 스킬 | 관계 |
+|------|------|
+| `/suji-claude-guide` | Claude Code 체계(.claude 구조, 메모리, 스킬). doc-structure는 프로젝트 문서 |
+| `/suji-confluence-publish` | drafts/ 파일 → Confluence 업로드 |

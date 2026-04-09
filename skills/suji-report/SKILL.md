@@ -1,11 +1,11 @@
 ---
 name: suji-report
-description: KB briefs 기반 업무 성과 리포트. 매일 08:00 자동 + 수동 호출. 주간/월간/분기 3개 파일 동시 생성·덮어쓰기. drafts/ 저장 + Confluence 자동 업데이트. /suji-pitch 입력 소재, /suji-insights 양방향 연결.
+description: KB logbooks 기반 업무 성과 리포트. 매일 08:00 자동 + 수동 호출. 주간/월간/분기 3개 파일 동시 생성·덮어쓰기. drafts/ 저장 + Confluence 자동 업데이트. /suji-pitch 입력 소재, /suji-insights 양방향 연결.
 ---
 
 # suji-report
 
-KB에 축적된 briefs 데이터를 집계하여 **업무 성과 리포트**를 생성한다.
+KB에 축적된 logbooks 데이터를 집계하여 **업무 성과 리포트**를 생성한다.
 팀 주간보고, 개인 업무 정리용 리소스이며, `/suji-pitch`의 입력 소재로 사용된다.
 
 **scope: work only** — personal 프로젝트는 리포트에서 제외. `WHERE scope = 'work'` 조건 필수.
@@ -73,22 +73,22 @@ python3 ~/Workspace/sujicho-kb/scripts/build-index.py
 
 ### Step 3: 데이터 수집
 
-**3-1. 정량 — SQLite briefs 테이블**
+**3-1. 정량 — SQLite logbooks 테이블**
 
 ```sql
 -- 프로젝트별 집계
 SELECT project, scope, grade, COUNT(*) as sessions,
        SUM(cost_usd) as cost, SUM(input_tokens) as input_t,
        SUM(output_tokens) as output_t
-FROM briefs
+FROM logbooks
 WHERE scope = 'work' AND date BETWEEN :start AND :end
 GROUP BY project, scope, grade
 ORDER BY sessions DESC;
 ```
 
-**3-2. 정성 — briefs 본문**
+**3-2. 정성 — logbooks 본문**
 
-기간 내 briefs의 brief.md에서 추출:
+기간 내 logbooks의 logbook.md에서 추출:
 - `decisions:` frontmatter → 주요 의사결정
 - `## 성과` 섹션 → 성과 태그 ([절감], [대체], [수치] 등)
 - `## 다음 단계` → 진행 중/예정 작업
@@ -165,7 +165,7 @@ ORDER BY severity DESC, date DESC;
 | 평균 세션 비용 | ${n} |
 
 ## 다음 단계
-(briefs의 '다음 단계' 섹션에서 미완료 항목 집계)
+(logbooks의 '다음 단계' 섹션에서 미완료 항목 집계)
 ```
 
 **자동 실행 시**: 초안 생성 → 바로 저장 + Confluence 업데이트 (사용자 확인 없음)
@@ -212,7 +212,7 @@ VALUES (:today, :type, :detail, :severity, 'suji-report');
 감지 대상:
 - 특정 프로젝트 비용이 전체의 50% 이상 → `type: cost`
 - 같은 프로젝트 3주 연속 최다 세션 → `type: pattern`
-- 성과 태그 없는 Full brief 비율 30% 이상 → `type: trend`
+- 성과 태그 없는 Full logbook 비율 30% 이상 → `type: trend`
 
 **자동 실행 시**: 패턴 발견하면 insights 테이블에 바로 기록
 **수동 호출 시**: 사용자에게 보고하고 저장 여부 확인

@@ -82,6 +82,10 @@ Claude Code의 프로젝트 관리 체계에 대해 물어볼 때 사용하는 �
 - **내 스킬 확인**: `ls ~/.claude/skills/ | grep suji-`
 - **frontmatter 지원 필드**: `name` (필수), `description` (필수). `version`, `author`, `date`는 미지원 — 필요하면 본문에 기재.
 
+### 주요 스킬 모음
+- **gstack**: /office-hours, /plan-ceo-review, /plan-eng-review, /review, /ship, /browse, /qa 등
+- **커스텀**: /suji-doc-structure, /suji-claude-guide
+
 ## 플랜 모드
 
 복잡한 작업 전 계획을 먼저 세울 수 있다.
@@ -112,3 +116,10 @@ Claude Code의 프로젝트 관리 체계에 대해 물어볼 때 사용하는 �
 | "플랜 모드 어떻게?" | 플랜 모드 |
 | ".claude 뭐가 있어?" | .claude 폴더 맵 |
 | "문서 만들 때 이름?" | → `/suji-doc-structure`로 안내 |
+
+## 관련 스킬
+
+| 스킬 | 관계 |
+|------|------|
+| `/suji-doc-structure` | 프로젝트 문서 네이밍. claude-guide는 .claude 체계 안내 |
+| `/suji-kb` | KB 시스템 운영. claude-guide에서 스킬 설명 시 참조 |

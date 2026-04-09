@@ -15,7 +15,7 @@ description: 세션 복기 — 무의식적 판단을 의식적으로 분해하�
 
 ## 저장 경로
 
-`~/Workspace/personal/thinking_helper/reflect/yyyymmdd_제목/`
+`~/Workspace/personal/project/thinking_helper/reflect/yyyymmdd_제목/`
 
 ## 워크플로우
 
@@ -54,7 +54,7 @@ description: 세션 복기 — 무의식적 판단을 의식적으로 분해하�
 
 승인 후 파일을 생성한다:
 ```bash
-mkdir -p ~/Workspace/personal/thinking_helper/reflect/yyyymmdd_제목/
+mkdir -p ~/Workspace/personal/project/thinking_helper/reflect/yyyymmdd_제목/
 ```
 
 ### artifact.md 템플릿
