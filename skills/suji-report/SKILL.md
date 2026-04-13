@@ -118,6 +118,28 @@ ORDER BY severity DESC, date DESC;
 - 의존성 체인 시각화
 - blocked 항목의 사유
 
+**3-6. AI 패턴 분포**
+
+```sql
+-- ai_pattern 필드 기준 세션 수/비용 집계 (logbook.md frontmatter 파싱)
+-- 예: agentic_coding 12건 $340, augmented_decision 8건 $180
+```
+
+logbook.md frontmatter에서 `ai_pattern` 필드를 추출하여 패턴별 세션 수, 비용 집계.
+ai_pattern 필드가 없는 logbook은 "미분류"로 처리.
+
+**3-7. Before/After ROI 집계**
+
+logbook.md 본문의 `### Before / After` 테이블에서 데이터 추출:
+- "AI 미사용" 소요 시간 합산 vs "AI 사용" 소요 시간 합산 → 절감률
+- Before/After 테이블이 없는 logbook은 집계에서 제외
+
+**3-8. OKR별 그룹핑 (work scope)**
+
+logbook.md frontmatter에서 `okr` 필드 추출:
+- 동일 OKR의 세션 수, 비용, 주요 성과를 그룹핑
+- okr 필드가 없는 logbook은 "OKR 미지정"으로 처리
+
 ### Step 4: 리포트 생성
 
 ```markdown
@@ -155,6 +177,34 @@ ORDER BY severity DESC, date DESC;
 
 ## 인사이트
 (insights 테이블 미처리 건 + 이번 리포트에서 새로 발견한 패턴)
+
+## OKR 매핑
+(okr 필드가 있는 logbook 기준. 없으면 섹션 생략)
+
+| OKR | 세션 수 | 투입 비용 | 주요 성과 |
+|-----|---------|----------|----------|
+| {OKR 1} | {n}건 | ${cost} | {성과 태그 상위 항목} |
+| OKR 미지정 | {n}건 | ${cost} | - |
+
+## AI 활용 패턴 분포
+(ai_pattern 필드가 있는 logbook 기준. 없으면 섹션 생략)
+
+| 패턴 | 세션 수 | 비용 | 대표 사례 |
+|------|---------|------|----------|
+| Agentic Coding | {n} | ${cost} | {slug} |
+| Augmented Decision | {n} | ${cost} | {slug} |
+| Context Engineering | {n} | ${cost} | {slug} |
+| Harness Engineering | {n} | ${cost} | {slug} |
+| Automation | {n} | ${cost} | {slug} |
+
+## ROI 요약
+(Before/After 테이블이 있는 logbook 기준. 없으면 섹션 생략)
+
+| 항목 | 추정 (AI 미사용) | 실측 (AI 사용) | 절감 |
+|------|----------------|---------------|------|
+| 총 소요 시간 | {합산}시간 | {합산}시간 | {절감률}% |
+| 총 비용 | - | ${total_cost} | - |
+| Before/After 기록 세션 | - | {n}건 / 전체 {total}건 | 커버리지 {%} |
 
 ## AI 활용 지표
 | 항목 | 값 |
@@ -213,6 +263,10 @@ VALUES (:today, :type, :detail, :severity, 'suji-report');
 - 특정 프로젝트 비용이 전체의 50% 이상 → `type: cost`
 - 같은 프로젝트 3주 연속 최다 세션 → `type: pattern`
 - 성과 태그 없는 Full logbook 비율 30% 이상 → `type: trend`
+- ai_pattern별 Before/After 시간 절감률 편차가 2배 이상 → `type: pattern_roi` (예: "augmented_decision 세션이 agentic_coding 대비 시간 절감률 3배")
+- okr 미지정 Full logbook 비율 50% 이상 → `type: okr_gap`
+- Before/After 테이블 작성률(Full logbook 대비) 30% 미만 → `type: coverage`
+- related 필드로 3건 이상 연결된 logbook 클러스터 발견 → `type: casestudy_candidate` (케이스스터디 승격 후보로 사용자에게 제안)
 
 **자동 실행 시**: 패턴 발견하면 insights 테이블에 바로 기록
 **수동 호출 시**: 사용자에게 보고하고 저장 여부 확인

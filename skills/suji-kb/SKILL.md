@@ -78,6 +78,20 @@ Logbook 저장 경로: `projects/{scope}/{project}/{slug}/logbook.md`
 
 등급 검증: frontmatter 작성 시 Light/Meta인데 decisions가 있으면 사용자에게 Full 승격 여부를 확인한다.
 
+### Step 3.5: AI 패턴 추천
+
+세션 내용 기반으로 ai_pattern 자동 추천. 복수 해당 가능.
+
+| 조건 | 추천 패턴 |
+|------|----------|
+| 코드 수정, PR 생성, 디버깅을 AI가 자율 수행 | `agentic_coding` |
+| 리서치, 분석, 비교, 데이터 수집이 주 활동 | `augmented_decision` |
+| CLAUDE.md, 스킬, 메모리, 프롬프트 설계 포함 | `context_engineering` |
+| 테스트/검증 체계, eval 프레임워크 설계 | `harness_engineering` |
+| cron, hook, 파이프라인, 자동화 구축 | `automation` |
+
+추천 결과를 사용자에게 보여주고 확인받는다. work scope이면 okr 필드도 함께 제안한다.
+
 ### Step 4: Slug 생성
 
 디렉토리 이름 = `{YYYY-MM-DD}-{한글-kebab-case-topic-slug}/`
@@ -125,6 +139,16 @@ artifacts:                             # 생성/수정한 파일
 ai_contribution: "{AI가 한 것 한 줄}"
 human_contribution: "{내가 한 것 한 줄}"
 publishable: {true|false|redact}       # 외부 공개 가능 여부
+ai_pattern:                            # AI 활용 패턴 (복수 가능, Step 3.5에서 추천)
+  - agentic_coding                     # AI가 코드 탐색→수정→PR 자율 수행
+  - augmented_decision                 # 사람이 판단, AI가 분석 지원
+  - context_engineering                # CLAUDE.md/스킬/메모리 설계
+  - harness_engineering                # AI 출력 품질 검증 체계 설계
+  - automation                         # 반복 작업 완전 자동화
+okr: "{팀 OKR 또는 개인 목표}"           # 선택. work scope에서 주로 사용
+related:                               # 선택. 선행/후행 작업 참조
+  - slug: "{YYYY-MM-DD-slug}"
+    relation: preceded_by | led_to | continuation_of
 ---
 
 # {title}
@@ -148,6 +172,15 @@ publishable: {true|false|redact}       # 외부 공개 가능 여부
 - [리스크 해소] {제거된 위험}
 - [기반] {향후 활용 가능한 인프라/구조}
 - [정량] {숫자로 측정 가능한 기타 결과}
+
+### Before / After
+(Full 등급에서만 작성. 추정이 어려우면 생략 가능)
+
+| 항목 | AI 미사용 (추정) | AI 사용 (실측) |
+|------|----------------|---------------|
+| 소요 시간 | {추정 소요} | {실제 소요} |
+| 품질/성과 | {기존 방식 결과} | {AI 활용 결과} |
+| 비용 | {인건비 또는 기존 비용} | ${cost_usd} |
 
 ## 다음 단계
 (후속 작업, 우선순위)
@@ -200,6 +233,26 @@ Logbook 작성 가이드라인:
 - 일반적 요약이 아니라 구체적 의사결정과 산출물 기술
 
 Logbook 초안을 사용자에게 보여주고 확인받는다.
+
+### Step 5.5: related 자동 제안
+
+Logbook 생성 후, 동일 project 내 기존 logbook과의 관련성을 자동 탐색하여 `related` 필드 후보를 제안한다.
+
+탐색 방법:
+1. 동일 `project` 내 최근 10건 logbook의 `tags` 비교
+2. tags 겹침이 50% 이상이면 related 후보로 제안
+3. `follows` 필드가 있으면 해당 logbook을 `related: continuation_of`로 자동 추가
+4. 기존 logbook에서 현재 세션의 `## 배경`에 언급된 slug가 있으면 `preceded_by`로 제안
+
+제안 형식:
+```
+🔗 관련 logbook 제안:
+  - 2026-04-01-KB-시스템-설계 (tags 70% 겹침) → continuation_of?
+  - 2026-03-27-MDX-원본-복원 (배경에서 언급) → preceded_by?
+  추가/수정/스킵?
+```
+
+사용자 확인 후 `related` 필드에 반영한다. 후보가 없으면 이 스텝을 건너뛴다.
 
 ### Step 6: 산출물 수집
 
