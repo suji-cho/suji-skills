@@ -14,8 +14,6 @@ Obsidian 데일리 노트 기반 업무 시간 관리. ERP MBO 입력의 원본 
 ```
 /suji-daily-mbo (데일리 입력)
     ↓
-Bases 월간요약.base (실시간 대시보드)
-    ↓
 /suji-daily-mbo review (월별 취합 → ERP 참조용)
     ↓
 /suji-report (성과 리포트 소재)
@@ -173,4 +171,3 @@ review 시 두 포맷 모두 파싱 가능해야 함.
 - `/suji-meeting-refine`: 회의록 정리 (회의 항목의 작업내용과 연결)
 - `work/work_minutes/2026/monthly_task/`: 월간 TODO (할일 수집 소스)
 - `work/project_todo/`: 프로젝트 태스크 카드 (할일 수집 소스)
-- `work/work_minutes/2026/ERP 공수 월별 리포트/월간요약.base`: Bases 실시간 대시보드
