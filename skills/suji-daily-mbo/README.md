@@ -1,4 +1,4 @@
-# suji-daily-mbo
+# suji-work-minute
 
 Obsidian 데일리 노트 기반 업무 시간 관리. ERP MBO 입력의 원본 데이터.
 
@@ -7,16 +7,16 @@ Obsidian 데일리 노트 기반 업무 시간 관리. ERP MBO 입력의 원본 
 ## When to use
 
 - "오늘 할일 정리해줘", "데일리 마감", "이번 달 공수 정리"
-- `/suji-daily-mbo`
+- `/suji-work-minute`
 
 ## 파이프라인 위치
 
 ```
-/suji-daily-mbo (데일리 입력)
+/suji-work-minute (데일리 입력)
     ↓
 Bases 월간요약.base (실시간 대시보드)
     ↓
-/suji-daily-mbo review (월별 취합 → ERP 참조용)
+/suji-work-minute mbo (월별 취합 → ERP 참조용)
     ↓
 /suji-report (성과 리포트 소재)
 /suji-cto-weekly-report (시간 배분 데이터)
@@ -26,11 +26,11 @@ Bases 월간요약.base (실시간 대시보드)
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/suji-daily-mbo` | 오늘 노트 생성 + 할일 수집 (캐리오버+월간TODO+프로젝트카드) |
-| `/suji-daily-mbo yesterday` | 어제 노트 후속 입력 |
-| `/suji-daily-mbo close` | 마감 정리 (공수 합산, projects 매칭, 8h 미만 경고) |
-| `/suji-daily-mbo review` | 이번 달 월별 취합 리스트 |
-| `/suji-daily-mbo review 2026-03` | 특정 월 취합 |
+| `/suji-work-minute` | 오늘 노트 생성 + 할일 수집 (캐리오버+월간TODO+프로젝트카드) |
+| `/suji-work-minute yesterday` | 어제 노트 후속 입력 |
+| `/suji-work-minute close` | 마감 정리 (공수 합산, projects 매칭, 8h 미만 경고) |
+| `/suji-work-minute mbo` | 이번 달 월별 취합 리스트 |
+| `/suji-work-minute mbo 2026-03` | 특정 월 취합 |
 
 ## 경로
 
@@ -72,10 +72,10 @@ projects: []
 
 ## 워크플로우 요약
 
-- **아침**: `/suji-daily-mbo` → 어제 캐리오버 + 월간TODO + 프로젝트카드에서 할일 수집 → 의존성 상태 표시 (🟢 Ready / 🔴 Blocked)
+- **아침**: `/suji-work-minute` → 어제 캐리오버 + 월간TODO + 프로젝트카드에서 할일 수집 → 의존성 상태 표시 (🟢 Ready / 🔴 Blocked)
 - **업무 중**: 사용자가 Obsidian에서 직접 편집
-- **마감**: `/suji-daily-mbo close` → 공수 합산, projects 매칭, 8h 미만 경고, 미완료 확인
-- **월말**: `/suji-daily-mbo review` → 전체 취합 리스트 생성
+- **마감**: `/suji-work-minute close` → 공수 합산, projects 매칭, 8h 미만 경고, 미완료 확인
+- **월말**: `/suji-work-minute mbo` → 전체 취합 리스트 생성
 
 ## 관련
 
