@@ -283,6 +283,24 @@ git push
 새 파일이 없으면 commit 건너뛴다.
 remote가 설정되지 않았으면 push 건너뛴다.
 
+### Step 8.5: Clippings 미처리 확인
+
+`~/Workspace/Clippings/` 폴더를 스캔하여 미처리 파일이 있으면 알린다.
+
+```bash
+ls ~/Workspace/Clippings/*.md 2>/dev/null | wc -l
+```
+
+미처리 파일이 1건 이상이면:
+```
+📋 Clippings 미처리 {N}건:
+  - {파일명 1}
+  - {파일명 2}
+  ingest 할까?
+```
+
+사용자가 원하면 `/suji-kb ingest`로 처리. 아니면 스킵.
+
 ### Step 9: 완료 보고
 
 ```
