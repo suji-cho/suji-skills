@@ -15,7 +15,7 @@ description: 세션 복기 — 무의식적 판단을 의식적으로 분해하�
 
 ## 저장 경로
 
-`~/Workspace/personal/project/thinking_helper/reflect/yyyymmdd_제목/`
+`~/Workspace/sujicho-kb/self/reflect/YYYY-MM-DD-제목/`
 
 ## 워크플로우
 
@@ -60,12 +60,25 @@ thinking.md = 거기까지 도달한 **과정** (어떻게 나왔는지)
 
 승인 후 파일을 생성한다:
 ```bash
-mkdir -p ~/Workspace/personal/project/thinking_helper/reflect/yyyymmdd_제목/
+mkdir -p ~/Workspace/sujicho-kb/self/reflect/YYYY-MM-DD-제목/
 ```
 
 ### artifact.md 템플릿
 
 ```markdown
+---
+date: {YYYY-MM-DD}
+title: "{session title}"
+tags: [{사고 패턴 태그}]
+trigger: "{세션을 촉발한 질문/감정/상황}"
+patterns_found:
+  - "{발견된 패턴 1}"
+  - "{발견된 패턴 2}"
+linked_reflects: []
+linked_records: []
+linked_wiki: []
+---
+
 # Artifact: {session title}
 Date: {yyyymmdd}
 Session: {1줄 요약}
@@ -108,6 +121,22 @@ Tags: {사고 패턴 태그 — e.g., #scope-control, #trade-off, #bias, #refram
 - {구체적 행동 변화. 사용자 판단 영역이면 비워둔다}
 ```
 
+### Step 4.5: 교차참조 제안
+
+파일 생성 후, 이전 reflect와의 연결을 자동 탐색한다.
+
+1. `self/reflect/` 내 기존 artifact.md의 `tags`와 `patterns_found`를 비교
+2. 태그 겹침 50% 이상이면 `linked_reflects` 후보로 제안
+3. 같은 날짜에 records/ logbook이 있으면 `linked_records` 후보로 제안
+4. patterns_found가 3회 이상 반복되면 wiki 페이지 승격 제안:
+
+```
+💡 패턴 반복 감지: #self-image (3회)
+   → wiki 'self-image 패턴' 페이지로 정제할까?
+```
+
+사용자 확인 후 frontmatter에 반영.
+
 ### Step 5: 스킬 구조 검토
 
 세션에서 템플릿이나 인터뷰 방식에 대한 신규 인사이트가 나온 경우:
@@ -134,4 +163,4 @@ Tags: {사고 패턴 태그 — e.g., #scope-control, #trade-off, #bias, #refram
 
 - 파일 생성 전 반드시 내용을 보여주고 승인받는다
 - 디자인/콘텐츠는 사용자 확인 없이 변경 불가
-- KB(sujicho-kb)와는 별개 시스템이다. KB는 세션 아카이브, 이것은 사고 분해
+- KB(sujicho-kb)의 self/reflect/ 존에 저장된다. records(작업 기록)와 성격이 다르므로 별도 존으로 분리.
