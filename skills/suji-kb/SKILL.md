@@ -41,8 +41,8 @@ python3 ~/Workspace/sujicho-kb/scripts/session-archive.py
 
 매핑 규칙:
 
-| 키워드/패턴 | projects/ 매핑 | scope |
-|------------|---------------|-------|
+| 키워드/패턴 | records/ 매핑 | scope |
+|------------|--------------|-------|
 | portfolio, susiecho, MDX, 케이스스터디 | portfolio | personal |
 | opendataloader, ODL, odl | opendataloader | work |
 | medium, confluence, sync | medium-confluence-sync | work |
@@ -53,7 +53,7 @@ python3 ~/Workspace/sujicho-kb/scripts/session-archive.py
 
 scope 판단 기준: 회사 업무(ODL, Confluence, 시장분석 등) = work, 개인 프로젝트(포트폴리오, KB 등) = personal. tooling/logbook은 세션 맥락으로 판단.
 
-Logbook 저장 경로: `projects/{scope}/{project}/{slug}/logbook.md`
+Logbook 저장 경로: `records/{scope}/{project}/{slug}/logbook.md`
 
 출력 형식:
 ```
@@ -261,7 +261,7 @@ init에서 경로를 선언한 경우 해당 폴더를 스캔한다.
 
 ```
 📎 이 세션에서 생성한 파일:
-  ✅ kb/projects/.../logbook.md (KB 안)
+  ✅ kb/records/.../logbook.md (KB 안)
   ❓ ./research-notes.md (KB 밖 — 포함할까요?)
 ```
 
@@ -275,7 +275,7 @@ python3 ~/Workspace/sujicho-kb/scripts/build-index.py
 
 ```bash
 cd ~/Workspace/sujicho-kb
-git add sessions/ projects/ logbook/ scripts/ triage.yml
+git add sessions/ records/ self/ scripts/ triage.yml
 git commit -m "kb: {project}/{slug} — {logbook title}"
 git push
 ```
@@ -288,7 +288,7 @@ remote가 설정되지 않았으면 push 건너뛴다.
 ```
 ✅ suji-kb 완료
   📄 session: sessions/2026-04-01-{uuid}.md
-  📝 logbook: projects/{scope}/{project}/{slug}/logbook.md
+  📝 logbook: records/{scope}/{project}/{slug}/logbook.md
   📎 산출물: (있으면 나열)
   💰 비용: ${cost} (input: {n}K, output: {n}K)
   🔗 committed (pushed / no remote)
@@ -303,11 +303,11 @@ remote가 설정되지 않았으면 push 건너뛴다.
 3. 폴더 생성 및 선언:
 
 ```bash
-mkdir -p ~/Workspace/sujicho-kb/projects/{scope}/{project}/{YYYY-MM-DD-slug}
+mkdir -p ~/Workspace/sujicho-kb/records/{scope}/{project}/{YYYY-MM-DD-slug}
 ```
 
 ```
-📂 KB 경로: sujicho-kb/projects/{scope}/{project}/{slug}/
+📂 KB 경로: sujicho-kb/records/{scope}/{project}/{slug}/
 ```
 
 이후 세션에서 산출물 저장 시 이 경로를 사용한다.
@@ -315,7 +315,7 @@ mkdir -p ~/Workspace/sujicho-kb/projects/{scope}/{project}/{YYYY-MM-DD-slug}
 ## /suji-kb logbook — 미처리 세션 일괄 처리
 
 1. `sessions/`에서 모든 session_id 스캔
-2. `projects/**/logbook.md` + `logbook/**/logbook.md`에서 처리된 session_id 스캔
+2. `records/**/logbook.md`에서 처리된 session_id 스캔
 3. `triage.yml`에서 이전 분류 결과 로드 → 판정된 세션 스킵
 4. 미처리 세션 목록을 등급 추천과 함께 테이블로 제시:
 
