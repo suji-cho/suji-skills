@@ -5,7 +5,7 @@
 ## When to use
 
 - "Confluence에 올려줘", "페이지 배포해줘"
-- `~/Workspace/work/drafts/` 파일을 Confluence로 업로드할 때
+- `~/Workspace/work/outputs/drafts/` 파일을 Confluence로 업로드할 때
 - Confluence 페이지 제목이나 레이아웃 규칙을 물어볼 때
 
 ## 페이지 제목 컨벤션
@@ -62,7 +62,7 @@ Why: 기본 레이아웃은 가로 무한 확장되어 가독성이 떨어지고
 
 ### 신규 업로드
 
-1. 대상 파일 확인 (`~/Workspace/work/drafts/` 내 파일)
+1. 대상 파일 확인 (`~/Workspace/work/outputs/drafts/` 내 파일)
 2. `[확인 필요]` 잔존 여부 체크 → 있으면 사용자에게 보고
 3. frontmatter/HTML 주석 제거
 4. 페이지 제목 변환: 파일명에서 `.md` 제거

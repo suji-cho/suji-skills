@@ -35,16 +35,16 @@ Bases 월간요약.base (실시간 대시보드)
 ## 경로
 
 ```
-DAILY_BASE=~/Workspace/work/work_minutes/2026/daily_task
+DAILY_BASE=~/Workspace/work/hand-ons/work_minutes/2026/daily_task
 DAILY_PATH=$DAILY_BASE/YYYY Mon          # 월별 서브폴더 (예: "2026 Apr")
-MONTHLY_TODO_PATH=~/Workspace/work/work_minutes/2026/monthly_task
+MONTHLY_TODO_PATH=~/Workspace/work/hand-ons/work_minutes/2026/monthly_task
 PROJECT_TODO_PATH=~/Workspace/work/project_todo
-REVIEW_PATH=~/Workspace/work/work_minutes/2026/ERP 공수 월별 리포트
+REVIEW_PATH=~/Workspace/work/hand-ons/work_minutes/2026/ERP 공수 월별 리포트
 ```
 
 ## 데일리 노트 포맷
 
-파일: `work/work_minutes/2026/daily_task/YYYY Mon/yyyymmdd.md`
+파일: `work/hand-ons/work_minutes/2026/daily_task/YYYY Mon/yyyymmdd.md`
 
 ```markdown
 ---

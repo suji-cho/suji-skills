@@ -43,10 +43,10 @@ AX_GUIDELINES=$MEMORY_PATH/feedback_ax_performance_writing.md
 
 ## 입력 소스 (우선순위순)
 
-1. `/suji-report` 분기 리포트 (`~/Workspace/work/drafts/*_업무성과리포트_*분기.md`)
-2. AX 사례 초안 (`~/Workspace/work/drafts/*_AX사례_*.md`)
-3. 데일리 노트 (`~/Workspace/work/work_minutes/2026/daily_task/`)
-4. 월간 TODO (`~/Workspace/work/work_minutes/2026/monthly_task/`)
+1. `/suji-report` 분기 리포트 (`~/Workspace/work/outputs/drafts/*_업무성과리포트_*분기.md`)
+2. AX 사례 초안 (`~/Workspace/work/outputs/drafts/*_AX사례_*.md`)
+3. 데일리 노트 (`~/Workspace/work/hand-ons/work_minutes/2026/daily_task/`)
+4. 월간 TODO (`~/Workspace/work/hand-ons/work_minutes/2026/monthly_task/`)
 5. KB logbooks (`~/Workspace/sujicho-kb/index.db` — `WHERE scope = 'work'`)
 6. Confluence 기존 성과 페이지 (팀원 참고용)
 7. Memory: 프로젝트 맥락, 진행 중 이슈
@@ -166,14 +166,14 @@ AX_GUIDELINES=$MEMORY_PATH/feedback_ax_performance_writing.md
 ### Step 5: 저장
 
 ```
-~/Workspace/work/drafts/yyyymmdd_성장피드백_{분기}.md
+~/Workspace/work/outputs/drafts/yyyymmdd_성장피드백_{분기}.md
 ```
 
 ## 워크플로우: /suji-performance ax
 
 ### Step 1: 데이터 수집
 
-1. 기존 AX 초안 확인 (`~/Workspace/work/drafts/*_AX사례_*.md`)
+1. 기존 AX 초안 확인 (`~/Workspace/work/outputs/drafts/*_AX사례_*.md`)
 2. suji-report 분기 리포트 참조
 3. KB logbooks에서 Before/After, 의사결정, 성과 태그 추출
 
@@ -189,13 +189,13 @@ Confluence 컬럼: AI도구 | 기간 | 현황 | 프로젝트 | AX 유형 | AX �
 ### Step 3: 사용자 검토 → 저장
 
 ```
-~/Workspace/work/drafts/yyyymmdd_AX사례_{분기}.md
+~/Workspace/work/outputs/drafts/yyyymmdd_AX사례_{분기}.md
 ```
 
 ## 주의사항
 
 - 초안은 반드시 사용자에게 보여주고 확인받을 것
 - 콘텐츠(텍스트/수치/강조점) 사용자 확인 없이 변경 불가
-- 파일 저장 시 `~/Workspace/work/drafts/` + `yyyymmdd_제목.md` 컨벤션 준수
+- 파일 저장 시 `~/Workspace/work/outputs/drafts/` + `yyyymmdd_제목.md` 컨벤션 준수
 - 데이터가 없는 항목은 "데이터 없음" 명시
 - **가이드라인 체크리스트는 Ralph Loop 대상** — 전항목 통과까지 반복, 3회 실패 시 사용자에게 보고

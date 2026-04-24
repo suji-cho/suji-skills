@@ -40,8 +40,8 @@ TL;DR → 배경 → 조사 내용 → 비교/분석 → 결론 & 제안 → 출
 
 | 용도 | 경로 | 파일명 |
 |------|------|--------|
-| 리서치 | `~/Workspace/work/research/` | `yyyymmdd_filename.md` |
-| 산출물 초안 | `~/Workspace/work/drafts/` | `yyyymmdd_제목.md` |
+| 리서치 | `~/Workspace/work/outputs/research/` | `yyyymmdd_filename.md` |
+| 산출물 초안 | `~/Workspace/work/outputs/drafts/` | `yyyymmdd_제목.md` |
 
 ## Confluence 업로드
 

@@ -6,15 +6,15 @@
 
 - "회의록 정리해줘", "미팅 노트 올려줘"
 - `/suji-meeting-refine`
-- `/suji-meeting-refine ~/Workspace/work/meeting_minutes/20260408_팀회의.md`
+- `/suji-meeting-refine ~/Workspace/work/hand-ons/meeting_minutes/20260408_팀회의.md`
 
 ## 옵시디언 경로
 
 | 항목 | 경로 |
 |------|------|
-| 업무 회의록 | `~/Workspace/work/meeting_minutes/` |
+| 업무 회의록 | `~/Workspace/work/hand-ons/meeting_minutes/` |
 | 개인 회의록 | `~/Workspace/personal/personal/` |
-| 월간 TODO | `~/Workspace/work/work_minutes/2026/monthly_task/` |
+| 월간 TODO | `~/Workspace/work/hand-ons/work_minutes/2026/monthly_task/` |
 | 파일명 규칙 | `yyyymmdd_제목.md` |
 
 ## 해시태그 → Confluence 폴더 매핑

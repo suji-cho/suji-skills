@@ -48,8 +48,8 @@
 ## 저장 경로
 
 ```
-~/Workspace/work/drafts/yyyymmdd_성장피드백_{분기}.md
-~/Workspace/work/drafts/yyyymmdd_AX사례_{분기}.md
+~/Workspace/work/outputs/drafts/yyyymmdd_성장피드백_{분기}.md
+~/Workspace/work/outputs/drafts/yyyymmdd_AX사례_{분기}.md
 ```
 
 ## 관련 스킬

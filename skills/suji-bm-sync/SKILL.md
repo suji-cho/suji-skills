@@ -73,7 +73,7 @@ $B snapshot -c
 ### Step 2-A: 신규 리드 사업성 평가 (점수 모델)
 
 참조 문서: Confluence Page ID 2107052902 (ODL BM 리드 사업성 판단 기준 v1.0)
-로컬 사본: `~/Workspace/work/drafts/20260420_ODL BM 리드 사업성 판단 기준.md`
+로컬 사본: `~/Workspace/work/outputs/drafts/20260420_ODL BM 리드 사업성 판단 기준.md`
 
 #### Gate 필터
 

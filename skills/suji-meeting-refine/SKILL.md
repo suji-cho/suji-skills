@@ -17,9 +17,9 @@ description: 옵시디언 회의록 원본 → 결론 추출 + AI 정리 → Con
 ## 옵시디언 정보
 
 - Vault 경로: `~/Workspace/`
-- 업무 회의록: `~/Workspace/work/meeting_minutes/`
+- 업무 회의록: `~/Workspace/work/hand-ons/meeting_minutes/`
 - 개인 회의록: `~/Workspace/personal/personal/`
-- 월간 TODO: `~/Workspace/work/work_minutes/2026/monthly_task/`
+- 월간 TODO: `~/Workspace/work/hand-ons/work_minutes/2026/monthly_task/`
 - 파일명 규칙: `yyyymmdd_제목.md`
 
 ### 옵시디언 파일 구조 (입력)
@@ -124,7 +124,7 @@ description: 옵시디언 회의록 원본 → 결론 추출 + AI 정리 → Con
 
 결론의 **액션** 항목을 옵시디언 TODO 파일에 추가한다.
 
-- 경로: `~/Workspace/work/work_minutes/2026/monthly_task/`
+- 경로: `~/Workspace/work/hand-ons/work_minutes/2026/monthly_task/`
 - 파일명: `2026 Apr TODO.md` (월별)
 - 형식:
 

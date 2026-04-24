@@ -58,9 +58,9 @@ KB logbooks 기반 업무 성과 리포트. 주간/월간/분기 3개 파일을 
 ## 저장
 
 ```
-~/Workspace/work/drafts/yyyymmdd_업무성과리포트_W{nn}.md     (주간)
-~/Workspace/work/drafts/yyyymmdd_업무성과리포트_{MM}월.md     (월간)
-~/Workspace/work/drafts/yyyymmdd_업무성과리포트_{Q}분기.md    (분기)
+~/Workspace/work/outputs/drafts/yyyymmdd_업무성과리포트_W{nn}.md     (주간)
+~/Workspace/work/outputs/drafts/yyyymmdd_업무성과리포트_{MM}월.md     (월간)
+~/Workspace/work/outputs/drafts/yyyymmdd_업무성과리포트_{Q}분기.md    (분기)
 ```
 
 - `yyyymmdd`는 기간 **시작일**. 이미 존재하면 덮어쓰기.

@@ -13,7 +13,7 @@ description: "리서치 수행 및 드래프트/리서치 파일 Confluence 업�
 - "리서치해줘", "조사해줘", "~에 대해 알아봐줘"
 - "리서치 올려줘", "드래프트 올려줘", "컨플루언스에 올려줘"
 - "리서치 동기화해줘", "초안 업로드해줘"
-- ~/Workspace/work/drafts/ 또는 ~/Workspace/work/research/ 파일 작성·업로드 시
+- ~/Workspace/work/outputs/drafts/ 또는 ~/Workspace/work/outputs/research/ 파일 작성·업로드 시
 
 ---
 
@@ -88,10 +88,10 @@ status: draft | review | final
 
 | 용도 | 경로 | 파일명 규칙 |
 |------|------|------------|
-| 산출물 초안 | `~/Workspace/work/drafts/` | `yyyymmdd_제목.md` |
-| 리서치 | `~/Workspace/work/research/` | `yyyymmdd_filename.ext` |
+| 산출물 초안 | `~/Workspace/work/outputs/drafts/` | `yyyymmdd_제목.md` |
+| 리서치 | `~/Workspace/work/outputs/research/` | `yyyymmdd_filename.ext` |
 
-- 템플릿: `~/Workspace/work/drafts/_template_confluence_table.md`
+- 템플릿: `~/Workspace/work/outputs/drafts/_template_confluence_table.md`
 
 ---
 
@@ -138,7 +138,7 @@ Confluence에 올라가면 안 되는 로컬 전용 표기:
 1. 사용자의 리서치 주제 확인
 2. 출처 우선순위에 따라 조사 (공식 문서 우선)
 3. 문서 구조(섹션 2)에 맞춰 작성
-4. `~/Workspace/work/research/yyyymmdd_filename.md`로 저장
+4. `~/Workspace/work/outputs/research/yyyymmdd_filename.md`로 저장
 5. 업로드 전 체크리스트(섹션 6) 통과 확인
 
 ### Confluence 업로드 시

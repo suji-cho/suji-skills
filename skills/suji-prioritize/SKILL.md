@@ -32,9 +32,9 @@ version: 1.0.0
 ## 설정
 
 ```
-DAILY_BASE=~/Workspace/work/work_minutes/2026/daily_task
+DAILY_BASE=~/Workspace/work/hand-ons/work_minutes/2026/daily_task
 DAILY_PATH=$DAILY_BASE/YYYY Mon
-MONTHLY_TODO_PATH=~/Workspace/work/work_minutes/2026/monthly_task
+MONTHLY_TODO_PATH=~/Workspace/work/hand-ons/work_minutes/2026/monthly_task
 PROJECT_TODO_PATH=~/Workspace/work/project_todo
 ```
 
@@ -161,6 +161,6 @@ P 레벨은 사용자가 정한다. 아래는 판단을 돕기 위한 기준이�
 
 ## 관련 경로
 
-- `work/project_todo/`: 프로젝트 태스크 카드 (태스크 수집 소스)
-- `work/work_minutes/2026/monthly_task/`: 월간 TODO (태스크 수집 소스)
-- `work/work_minutes/2026/daily_task/`: 데일리 노트 (입력 + 출력)
+- `work/project/project_todo/`: 프로젝트 태스크 카드 (태스크 수집 소스)
+- `work/hand-ons/work_minutes/2026/monthly_task/`: 월간 TODO (태스크 수집 소스)
+- `work/hand-ons/work_minutes/2026/daily_task/`: 데일리 노트 (입력 + 출력)

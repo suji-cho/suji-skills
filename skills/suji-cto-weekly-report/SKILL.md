@@ -55,7 +55,7 @@ mcp__claude_ai__getConfluencePage
 
 **2-2. competitor_tracker**
 
-파일 경로: `~/Workspace/work/competitor_tracker/history.json`
+파일 경로: `~/Workspace/work/project/competitor_tracker/history.json`
 
 - 최신 스냅샷의 GitHub Stars, Forks, Watchers, Open Issues 추출
 - 대상 레포: opendataloader-pdf, docling, Unstructured, pdfplumber, pypdf, PyMuPDF, liteparse
@@ -69,7 +69,7 @@ mcp__claude_ai__getConfluencePage
 
 **2-4. X 포스트 engagement (해당 시)**
 
-파일 경로: `~/Workspace/work/competitor_tracker/history.json`의 `x_post_metrics` 섹션
+파일 경로: `~/Workspace/work/project/competitor_tracker/history.json`의 `x_post_metrics` 섹션
 - Views, Likes, Bookmarks, Reposts, Replies 추이
 - 신규 저격 포스트가 있으면 `config.py`의 `X_POST_REGISTRY` 확인
 

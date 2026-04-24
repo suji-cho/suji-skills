@@ -31,7 +31,7 @@ CQL: ancestor = 1957232878 AND type = page ORDER BY created DESC
 
 | 소스 | 경로/방법 | 수집 항목 |
 |---|---|---|
-| competitor_tracker | `~/Workspace/work/competitor_tracker/history.json` | GitHub Stars, Forks, Watchers, Open Issues (7개 레포) |
+| competitor_tracker | `~/Workspace/work/project/competitor_tracker/history.json` | GitHub Stars, Forks, Watchers, Open Issues (7개 레포) |
 | PyPI | `/browse` → pypistats.org/packages/opendataloader-pdf | Last day, Last week, Last month 다운로드 (기준일: 2026-03-12 v2.0 배포) |
 | X 포스트 | `history.json`의 `x_post_metrics` 섹션 | Views, Likes, Bookmarks, Reposts, Replies |
 | BM 보고서 | Confluence MCP (page 2068480560) | 컨택 리스트, Status(진행/대기), 회신 대기 일수, 의사결정 요청사항 |
