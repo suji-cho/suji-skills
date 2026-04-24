@@ -38,7 +38,7 @@ Bases 월간요약.base (실시간 대시보드)
 DAILY_BASE=~/Workspace/work/hand-ons/work_minutes/2026/daily_task
 DAILY_PATH=$DAILY_BASE/YYYY Mon          # 월별 서브폴더 (예: "2026 Apr")
 MONTHLY_TODO_PATH=~/Workspace/work/hand-ons/work_minutes/2026/monthly_task
-PROJECT_TODO_PATH=~/Workspace/work/project_todo
+PROJECT_TODO_PATH=~/Workspace/work/project/project_todo
 REVIEW_PATH=~/Workspace/work/hand-ons/work_minutes/2026/ERP 공수 월별 리포트
 ```
 

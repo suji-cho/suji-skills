@@ -35,7 +35,7 @@ version: 1.0.0
 DAILY_BASE=~/Workspace/work/hand-ons/work_minutes/2026/daily_task
 DAILY_PATH=$DAILY_BASE/YYYY Mon
 MONTHLY_TODO_PATH=~/Workspace/work/hand-ons/work_minutes/2026/monthly_task
-PROJECT_TODO_PATH=~/Workspace/work/project_todo
+PROJECT_TODO_PATH=~/Workspace/work/project/project_todo
 ```
 
 ## 커맨드

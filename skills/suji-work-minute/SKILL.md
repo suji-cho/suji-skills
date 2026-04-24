@@ -26,7 +26,7 @@ Obsidian 데일리 노트 기반 업무 시간 관리. ERP MBO 입력의 원본 
 DAILY_BASE=~/Workspace/work/hand-ons/work_minutes/2026/daily_task
 DAILY_PATH=$DAILY_BASE/YYYY Mon          # 월별 서브폴더 (예: "2026 Apr")
 MONTHLY_TODO_PATH=~/Workspace/work/hand-ons/work_minutes/2026/monthly_task
-PROJECT_TODO_PATH=~/Workspace/work/project_todo
+PROJECT_TODO_PATH=~/Workspace/work/project/project_todo
 REVIEW_PATH=~/Workspace/work/hand-ons/work_minutes/2026/ERP 공수 월별 리포트
 ```
 

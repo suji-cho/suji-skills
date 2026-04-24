@@ -88,7 +88,7 @@ status: draft | review | final
 
 | 용도 | 경로 | 파일명 규칙 |
 |------|------|------------|
-| 산출물 초안 | `~/Workspace/work/outputs/drafts/` | `yyyymmdd_제목.md` |
+| 산출물 초안 | `~/Workspace/work/outputs/drafts/` | 이미지 없음: `yyyymmdd_제목.md` / 이미지 있음: `yyyymmdd_제목/` 폴더 (내부 `.md` + `images/`) |
 | 리서치 | `~/Workspace/work/outputs/research/` | `yyyymmdd_filename.ext` |
 
 - 템플릿: `~/Workspace/work/outputs/drafts/_template_confluence_table.md`

@@ -39,7 +39,7 @@ CEO Plan: `~/.gstack/projects/suji-cho-sujicho-kb/ceo-plans/2026-04-02-knowledge
 ```
 KB_PATH=~/Workspace/sujicho-kb
 DB_PATH=$KB_PATH/index.db
-DRAFTS_PATH=~/Workspace/work/drafts
+DRAFTS_PATH=~/Workspace/work/outputs/drafts
 
 CONFLUENCE_CLOUD=hancom.atlassian.net
 CONFLUENCE_SPACE=~suji.cho
@@ -108,7 +108,7 @@ ORDER BY severity DESC, date DESC;
 
 - Memory: 프로젝트 맥락, 진행 중 이슈
 - Git log: `git log --since=:start --until=:end --oneline` (주요 커밋)
-- ~/Workspace/work/: drafts/, research/ 내 해당 기간 파일
+- ~/Workspace/work/outputs/: drafts/, research/ 내 해당 기간 파일
 
 **3-5. Task Pipeline (dep-check)**
 
@@ -302,6 +302,6 @@ WHERE id IN (:included_ids);
 
 - 수동 호출 시 리포트 초안은 반드시 사용자에게 보여주고 확인받을 것
 - 콘텐츠(텍스트/수치/강조점) 사용자 확인 없이 변경 불가 (수동 호출 시)
-- 파일 저장 시 `~/Workspace/work/outputs/drafts/` + `yyyymmdd_제목.md` 컨벤션 준수
+- 파일 저장 시 `~/Workspace/work/outputs/drafts/` 컨벤션 준수. 이미지 없으면 `yyyymmdd_제목.md`, 이미지 있으면 `yyyymmdd_제목/` 폴더(내부 `.md` + `images/`).
 - Confluence 레이아웃: 500px 중앙 + 테이블 왼쪽 정렬 필수
 - 데이터가 없는 기간은 "데이터 없음" 명시, 빈 리포트도 생성

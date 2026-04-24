@@ -36,7 +36,7 @@ ERP 입력 / AX 사례 / CEO 보고 / Confluence
 ## 설정
 
 ```
-REPORT_PATH=~/Workspace/work/drafts
+REPORT_PATH=~/Workspace/work/outputs/drafts
 MEMORY_PATH=~/.claude/projects/-Users-sujicho-Workspace/memory
 AX_GUIDELINES=$MEMORY_PATH/feedback_ax_performance_writing.md
 ```
@@ -196,6 +196,6 @@ Confluence 컬럼: AI도구 | 기간 | 현황 | 프로젝트 | AX 유형 | AX �
 
 - 초안은 반드시 사용자에게 보여주고 확인받을 것
 - 콘텐츠(텍스트/수치/강조점) 사용자 확인 없이 변경 불가
-- 파일 저장 시 `~/Workspace/work/outputs/drafts/` + `yyyymmdd_제목.md` 컨벤션 준수
+- 파일 저장 시 `~/Workspace/work/outputs/drafts/` 컨벤션 준수. 이미지 없으면 `yyyymmdd_제목.md`, 이미지 있으면 `yyyymmdd_제목/` 폴더(내부 `.md` + `images/`).
 - 데이터가 없는 항목은 "데이터 없음" 명시
 - **가이드라인 체크리스트는 Ralph Loop 대상** — 전항목 통과까지 반복, 3회 실패 시 사용자에게 보고
