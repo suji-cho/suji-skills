@@ -53,7 +53,7 @@ P 레벨은 일괄 배정하지 않는다. 가장 급한 항목부터 하나씩 
 
 - 오늘 데일리 노트 (`daily_task/yyyymmdd.md`)
 - 월간 TODO (`monthly_task/YYYY Mon TODO.md`)
-- 프로젝트 카드 (`project_todo/*.md`)
+- 프로젝트 TODO 문서 (`project_todo/*.md`)
 - Memory 활성 프로젝트
 
 ## 관련 스킬
