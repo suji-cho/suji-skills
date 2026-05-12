@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "suji-skills",
-      "description": "Confluence publishing, CTO weekly report, BM sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
+      "description": "Confluence publishing, CTO weekly report, BM sync, ODL competitor/Medium page sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
       "version": "1.0.0",
       "source": "./"
     }

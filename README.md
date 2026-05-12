@@ -23,6 +23,8 @@ Or browse and install interactively:
 /suji-confluence-publish   # ~/work/drafts 파일을 Confluence에 업로드
 /suji-cto-weekly-report    # CTO 주간보고 자동 수집 → 초안 생성 → 업로드
 /suji-bm-sync              # BM 보고서에 Gmail·GitHub 현황 동기화
+/suji-competitor-sync      # ODL 경쟁사 지표 Confluence 페이지 즉시 갱신
+/suji-medium-sync          # ODL Medium+Github 페이지 즉시 갱신
 /suji-doc-structure        # 프로젝트 문서 생성·정리·진단
 /suji-claude-guide         # Claude Code 프로젝트 체계 안내
 ```
@@ -57,6 +59,8 @@ Or enable auto-update permanently in `~/.claude/settings.json`:
 | [suji-confluence-publish](./skills/suji-confluence-publish) | ~/work/drafts 파일을 Confluence에 업로드 — 제목 컨벤션, 500px 중앙 레이아웃, frontmatter 제거 자동 적용 |
 | [suji-cto-weekly-report](./skills/suji-cto-weekly-report) | CTO 주간보고 작성 — competitor_tracker·PyPI·BM 보고서 데이터 자동 수집, 템플릿 기반 초안, Confluence 업로드 |
 | [suji-bm-sync](./skills/suji-bm-sync) | BM 보고서 동기화 — Gmail BIZ contact 신규 메일, GitHub Issues 미대응 현황, 회신 대기 일수를 Confluence에 자동 반영 |
+| [suji-competitor-sync](./skills/suji-competitor-sync) | ODL 경쟁사 지표 페이지 즉시 갱신 — competitor_tracker GitHub Actions 수동 trigger + watch + 결과 보고 |
+| [suji-medium-sync](./skills/suji-medium-sync) | ODL Medium+Github 페이지 즉시 갱신 — medium_confluence_sync GitHub Actions 수동 trigger + watch + 결과 보고 |
 | [suji-doc-structure](./skills/suji-doc-structure) | 프로젝트 문서 관리 — HANDOFF/design/TODO 등 표준 문서명 선택, 폴더 구조 세팅, 문서 간 연결 규칙 적용 |
 | [suji-claude-guide](./skills/suji-claude-guide) | Claude Code 체계 안내 — .claude 폴더 구조, 메모리 시스템, 스킬 만들기, settings.json, 플랜 모드 가이드 |
 
@@ -89,6 +93,24 @@ Confluence BM 보고서에 최신 비즈니스 현황을 동기화.
 - 회신 대기 일수 자동 계산
 - 변경 사항 표시 → 사용자 승인 → Confluence 업데이트
 - 6단계 워크플로우, 쓰기 전 승인 게이트 포함
+
+### suji-competitor-sync
+
+OpenDataLoader+PDF 경쟁사 지표 Confluence 페이지를 즉시 최신 상태로 동기화.
+
+- 스케줄(매일 KST 09:00) 안 기다리고 당장 갱신
+- `gh workflow run competitor-tracker.yml` → watch → 결과 보고
+- 페이지 lastModified 확인 + 핵심 수치(ODL stars 증감) 발췌
+- 실패 시 에러 라인 자동 추출 + 진단 진행 여부 확인
+
+### suji-medium-sync
+
+OpenDataLoader Medium 발행 내역과 Github 상관관계 페이지를 즉시 최신 상태로 동기화.
+
+- 스케줄(매일 KST 10:00) 안 기다리고 당장 갱신
+- `gh workflow run sync-medium.yml` → watch → 결과 보고
+- daily/init 모드 지원 (기본 daily, 전체 재수집 시 init)
+- 실패 시 에러 라인 자동 추출 (Medium RSS·Confluence API 문제 식별)
 
 ### suji-doc-structure
 
