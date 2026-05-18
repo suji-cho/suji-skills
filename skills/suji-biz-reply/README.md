@@ -51,7 +51,6 @@ Gmail (OSS/BIZ contact 라벨)
 | 가격 문의 | 정확한 견적 위해 상황 파악 필요 안내 |
 | PoC/테스트 | 샘플 PDF 보내면 변환 결과 제공 가능 |
 | 협업 제안 | GitHub Discussions/Issues 링크 |
-| 파이프라인 vs DLS | 어느 형태 원하는지 확인 |
 
 ## 서명
 

@@ -73,7 +73,6 @@ $B goto https://mail.google.com/mail/u/0/#label/OSS%2FBIZ+contact
    - 협업: GitHub 링크 제공
      - Discussions: https://github.com/opendataloader-project/opendataloader/discussions
      - Issues: https://github.com/opendataloader-project/opendataloader/issues
-   - 파이프라인 vs DLS: 커스텀 파이프라인 구축 vs DataLoaderStudio UI 중 어느 쪽인지 확인
 6. **마무리** — The more context you can share, the better we can assess how well we can support your use case. We'll get back to you promptly once we have a clearer picture.
 7. **서명**:
 ```
