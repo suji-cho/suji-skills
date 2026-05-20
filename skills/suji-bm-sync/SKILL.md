@@ -81,7 +81,7 @@ Partnership 트랙: 인입 → 협의 → 합의 → 운영 (영업 깔때기 �
 
 ## 사업성 v1.2 (요약)
 
-자세한 산식은 페이지 D 또는 `/Users/sujicho/Workspace/work/outputs/business/criteria/v1.2_20260519/` 참조.
+자세한 산식은 페이지 D 또는 `/Users/sujicho/Workspace/work/outputs/odl_business/criteria/v1.2_20260519/` 참조.
 
 ### 점수 모델 (100점)
 
@@ -464,11 +464,11 @@ mcp__claude_ai__updateConfluencePage
 ## 참조 자료
 
 - **HANDOFF v2.1:** `/Users/sujicho/Workspace/work/project/project_todo/bm-sync-redesign/HANDOFF.md` (운영 기준 + 와이어프레임 + 마이그레이션)
-- **사업성 v1.2:** `/Users/sujicho/Workspace/work/outputs/business/criteria/v1.2_20260519/20260519_ODL BM 리드 사업성 판단 기준 v1.2.md`
-- **사업성 v1.1 (직전):** `/Users/sujicho/Workspace/work/outputs/business/criteria/v1.1_20260514/`
+- **사업성 v1.2:** `/Users/sujicho/Workspace/work/outputs/odl_business/criteria/v1.2_20260519/20260519_ODL BM 리드 사업성 판단 기준 v1.2.md`
+- **사업성 v1.1 (직전):** `/Users/sujicho/Workspace/work/outputs/odl_business/criteria/v1.1_20260514/`
 - **figma 순서도:** https://www.figma.com/board/JcjgcBk4YupmXr4CnISIqb/ODL-BM-순서도
 - **ODL Design System:** `~/Workspace/work/outputs/methodology/design_systems/odl/`
-- **로컬 tracker (마이그레이션 후 archive):** `~/Workspace/work/outputs/business/contacts/biz_contact_tracker.md`
+- **로컬 tracker (마이그레이션 후 archive):** `~/Workspace/work/outputs/odl_business/contacts/biz_contact_tracker.md`
 
 ## 변경 이력
 
