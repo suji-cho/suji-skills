@@ -56,7 +56,7 @@ Partnership 트랙: 인입 → 협의 → 합의 → 운영 (영업 깔때기 �
 - **우리 차례** (Blue 600) — 다음 외부 액션 우리
 - **상대 차례** (Amber 600) — 우리 답신 후 상대 응답 대기
 - **요구사항 확인 완료** (Purple 600) — 외부 요구사항 파악 끝, 우리 내부 작업 중
-- **종료** (Slate 500) — 이어갈 요구사항 없음 / 종료 통보 / 콜드 라인업
+- **종료** (Slate 500) — 이어갈 요구사항 없음 / 콜드 메일 라인업 (별도 종료 통보 X · Phase 0에서는 break-up 메일도 X)
 
 ### 프리픽스 12개 + 종료 사유 2개
 
@@ -64,7 +64,7 @@ Partnership 트랙: 인입 → 협의 → 합의 → 운영 (영업 깔때기 �
 `[기본 정보 요청]` `[기본 정보 답변 대기]` `[요구사항 논의 중]` `[스폰서십 제안 검토]`
 `[요구사항 파악 완료]` `[PoC 응답 대기]` `[상세 정보 답변 대기]`
 
-종료 사유 (2026-05-20 리프레이밍): `[이어갈 요구사항 없음]` (배제) · `[콜드 메일 라인업]` (콜드 메일 풀)
+종료 사유 (2026-05-20 리프레이밍): `[이어갈 요구사항 없음]` (배제) · `[콜드 메일 라인업]` (콜드 메일 라인업)
 
 ### 이탈 게이트 4개
 
@@ -76,12 +76,12 @@ Partnership 트랙: 인입 → 협의 → 합의 → 운영 (영업 깔때기 �
 ### 그룹
 
 - **Active** — Stage 1~10 + Partnership, Status 우리/상대 차례
-- **콜드 메일 풀** — Status 요구사항 확인 완료 + 종료(`[콜드 메일 라인업]`) 재시도 후보
+- **콜드 메일 라인업** — Status 요구사항 확인 완료 + 종료(`[콜드 메일 라인업]`) 재시도 후보
 - **종료 (배제)** — Stage 11 이탈 + `[이어갈 요구사항 없음]`
 
 ## 사업성 v1.2 (요약)
 
-자세한 산식은 페이지 D 또는 `/Users/sujicho/Workspace/work/outputs/odl_business/criteria/v1.2_20260519/` 참조.
+자세한 산식은 페이지 D 또는 `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.2_20260519/` 참조.
 
 ### 점수 모델 (100점)
 
@@ -141,7 +141,7 @@ context             1줄 컨텍스트 요약
 next_action         우리 다음 액션
 needs_review        🔍 검토 필요 여부
 exit_gate           이탈 시 #1/#2/#3/#4
-group               Active / 콜드 메일 풀 / 종료 (배제)
+group               Active / 콜드 메일 라인업 / 종료 (배제)
 ```
 
 ---
@@ -159,9 +159,9 @@ mcp__claude_ai__getConfluencePage
 
 페이지 A에서 파싱:
 - 섹션 0 ASCII art (현재 케이스 위치 분포)
-- 섹션 1 카운트 표 (Active N · 콜드 메일 풀 M · 종료 J · 신규 평가 L)
+- 섹션 1 카운트 표 (Active N · 콜드 메일 라인업 M · 종료 J · 신규 평가 L)
 - 섹션 3 Active 케이스 Stage별 토글 내 케이스 리스트
-- 섹션 4 콜드 메일 풀 케이스
+- 섹션 4 콜드 메일 라인업 케이스
 - 섹션 5 종료 (배제) 케이스
 - 섹션 6 Decision Log (최근 10건)
 
@@ -242,7 +242,7 @@ mcp__claude_ai_Gmail__get_thread
 
 #### 3-D. Stale 감지 (21일+ 무응답)
 
-`waiting_days >= 21` + `status == 상대 차례` → 콜드 후보, `exit_gate=#2` 후보, 그룹 `콜드 메일 풀` 라인업 제안.
+`waiting_days >= 21` + `status == 상대 차례` → 콜드 후보, `exit_gate=#2` 후보, 그룹 `콜드 메일 라인업` 라인업 제안.
 
 #### 3-E. Next Action 제안
 
@@ -256,7 +256,7 @@ Status가 `우리 차례` 또는 `요구사항 확인 완료`인 케이스만:
 if stage == 11 이탈 and prefix == [이어갈 요구사항 없음]:
     group = 종료 (배제)
 elif status == 요구사항 확인 완료 or (stage == 11 이탈 and prefix == [콜드 메일 라인업]):
-    group = 콜드 메일 풀
+    group = 콜드 메일 라인업
 else:
     group = Active
 ```
@@ -283,13 +283,13 @@ else:
 - [이름]: [기본 정보 답변 대기] → [요구사항 논의 중]
 
 ### Stale·이탈 진입 (P건) 🔍
-- [이름]: 상대 차례 21일+ → 이탈 #2 후보 / 콜드 메일 풀
+- [이름]: 상대 차례 21일+ → 이탈 #2 후보 / 콜드 메일 라인업
 
 ### Next Action 제안 (Q건) 🔍
 - [이름]: 답신 작성 + 가격 안내 첨부
 
 ### 그룹 이동 (R건) 🔍
-- [이름]: Active → 콜드 메일 풀
+- [이름]: Active → 콜드 메일 라인업
 ```
 
 모든 항목에 `🔍 검토` 표기. 항목별 인덱스(`[1]`, `[2]`...) 부여해 사용자가 선택적으로 거부 가능하도록.
@@ -338,7 +338,7 @@ mcp__claude_ai__updateConfluencePage
    - 단계 간 화살표
 
 📊 1. 오늘의 즉답 패널
-   1-1. 카운트 표 (Active N · 콜드 메일 풀 M · 종료 J · 신규 평가 L)
+   1-1. 카운트 표 (Active N · 콜드 메일 라인업 M · 종료 J · 신규 평가 L)
    1-2. 🚨 오늘 회신 / 🆕 신규 평가 / ⚠️ 21일+ 무응답
 
 🆕 2. Triage Queue (1차 판단 대기)
@@ -348,7 +348,7 @@ mcp__claude_ai__updateConfluencePage
    1차 판단 / Sample / 기초 협상 / PoC / Pilot 협상 /
    Pilot / MSA 협상 / Partnership 협의
 
-🟣 4. 콜드 메일 풀
+🟣 4. 콜드 메일 라인업
    요구사항 확인 완료 + Nurturing 통합
 
 ⚪ 5. 종료 (배제) [토글 기본 접힘]
@@ -369,7 +369,7 @@ mcp__claude_ai__updateConfluencePage
 
 Partnership: 협의 [1] (Alisa) → 합의 [0] → 운영 [0]
 이탈 #1 [8] · #2 [0] · #3 [0] · #4 [0]
-콜드 메일 풀 [2]
+콜드 메일 라인업 [2]
 ```
 
 코드블록 안에 monospace로 렌더링. 인포그래픽 PNG는 별도 태스크(placeholder만 유지).
@@ -390,17 +390,20 @@ mcp__claude_ai__updateConfluencePage
 
 - 11단계 정의·진입/전이 조건·주 담당·색 토큰
 - 이탈 게이트 #1~#4 진입 조건·후속 처리
-- Partnership 별도 트랙
-- 인포그래픽 PNG: HTML+Playwright 별도 태스크 (`<ac:image>` placeholder 유지)
+- **Partnership / Marketing 공통 트랙** (탐색·협의·합의·운영 / Discovery·Engagement·Activation·Acceleration)
+- 인포그래픽 매크로: 🛡️ 보존 룰 적용 (att2153153061 첨부됨 — placeholder로 덮어쓰기 금지)
 
 #### 6-D. 페이지 D `사업성 및 우선순위 평가 기준` (정의 변경 시만)
 
 운영 기준 v2.1 + 사업성 v1.2 정의 변경 시만 갱신.
 
+- 운영 기준 4종 v2.1 (Stage·Status·프리픽스·이탈 게이트)
 - 점수 모델 (45/35/20)
 - 컷오프 + 자동 +1 룰 + 지역 보정 + 비주류 섹터
 - 우선순위 매핑 룰
-- 인포그래픽 PNG: HTML+Playwright 별도 태스크
+- 검증 22건 상세 + 변경 이력 v1.0→v1.1→v1.2 + 근거 자료 (2107052902 통합)
+- 인포그래픽 매크로: 🛡️ 보존 룰 적용 (att2151941196 첨부됨)
+- **종료 사유 명칭**: `[이어갈 요구사항 없음]` (구 `[사업성 없음]` 폐기) · `[콜드 메일 라인업]` (구 `[콜드 메일 필수]` 폐기) — 2026-05-20 리프레이밍
 
 #### 6-E. 페이지 E `인바운드별 우선순위 매핑 상세` (매 sync)
 
@@ -445,11 +448,60 @@ mcp__claude_ai__updateConfluencePage
 | A 섹션 0 | ASCII art (코드블록 monospace) | 매 sync 자동 |
 | A 1~7 | 텍스트·표·이모지 뱃지 | 매 sync 자동 |
 | B | 텍스트 (복붙용) | 매 sync 자동 |
-| C 흐름도 | 인포그래픽 PNG (`<ac:image>` placeholder) | 별도 태스크 — 정의 변경 시 |
-| D 점수 모델 | 인포그래픽 PNG (`<ac:image>` placeholder) | 별도 태스크 — 정의 변경 시 |
+| C 흐름도 | 인포그래픽 PNG (`<ac:image>` 매크로, att2153153061) — 🛡️ 보존 룰 | 별도 태스크 — PNG 갱신은 attachment 새 버전 |
+| D 점수 모델 | 인포그래픽 PNG (`<ac:image>` 매크로, att2151941196) — 🛡️ 보존 룰 | 별도 태스크 — PNG 갱신은 attachment 새 버전 |
 | E 점수표 | 텍스트·표 | 매 sync 자동 |
 
 **인포그래픽 PNG 갱신은 본 스킬 범위 외.** HTML+Playwright 렌더링 + `attachment API` 업로드 + storage format `<ac:image>` 교체는 별도 태스크에서 처리. 본 스킬은 placeholder만 유지하고 텍스트 정의만 갱신한다.
+
+### 🛡️ 인포그래픽 매크로 보존 룰 (v2.1.1, 2026-05-20 추가)
+
+페이지 C·D 본문 갱신 시 **이미 첨부된 인포그래픽 매크로가 placeholder로 회귀되는 사고**를 방지한다.
+
+**문제 상황 (2026-05-20 발견):**
+- 페이지 C (2151056014)에 `att2153153061` 첨부 + storage format `<ac:image>` 매크로로 임베드 완료 (v8)
+- 그러나 외부 sync 호출로 본문이 재생성되며 매크로가 placeholder 텍스트로 회귀 (v7)
+- 재 복구 후에도 동일 패턴 반복 우려
+
+**보존 워크플로 (의무):**
+
+페이지 C·D body PUT 전, 다음 순서로 처리한다.
+
+1. **GET body.storage** — 현재 본문 가져오기
+2. **인포그래픽 섹션 식별** — `<h2>🎨 인포그래픽</h2>` 다음 첫 단락 추출
+3. **첨부 여부 판정**:
+   - `<ac:image>` + `<ri:attachment ri:filename=...>` 패턴 → **실제 첨부됨, 그대로 보존**
+   - panel-warning 또는 일반 placeholder 텍스트 → 갱신 대상
+4. **본문 갱신 시**: 첨부된 매크로는 **건드리지 않는다**
+   - 정의 텍스트(11단계 표·이탈 게이트·Partnership/Marketing 트랙)만 교체
+   - 인포그래픽 헤더 다음 단락은 원본 그대로 다시 삽입
+5. **PUT 후 검증** — `<ac:image>` 매크로 잔존 여부 확인. 회귀 시 즉시 복구
+
+**Python 패턴 예시:**
+
+```python
+import re
+# 1. body 가져옴
+# 2. 인포그래픽 섹션 매칭
+m = re.search(
+    r'(<h2>[^<]*인포그래픽</h2>)(<p>[^<]*<ac:image[^<]*<ri:attachment[^<]*</ac:image>[^<]*</p>)',
+    body,
+    flags=re.DOTALL
+)
+if m:
+    image_section = m.group(2)  # 보존
+    # ... 정의 섹션 갱신 ...
+    # 최종 PUT 시 image_section 그대로 삽입
+```
+
+**금지 패턴 (회귀 유발):**
+- ❌ body 전체를 새로 만들어 PUT (이미지 매크로 사라짐)
+- ❌ "이미지 자리에 placeholder 텍스트 작성" → 자동 회귀
+- ❌ 정의 갱신 시 인포그래픽 헤더 다음을 빈 단락으로 두기
+
+**예외:**
+- 인포그래픽 신규 생성 단계 (아직 첨부 없음) → placeholder 가능
+- 인포그래픽 PNG 자체 갱신은 attachment ID로 새 버전 업로드 (`POST /child/attachment/{id}/data`) — body 변경 X
 
 ## 주의 사항
 
@@ -464,13 +516,22 @@ mcp__claude_ai__updateConfluencePage
 ## 참조 자료
 
 - **HANDOFF v2.1:** `/Users/sujicho/Workspace/work/project/project_todo/bm-sync-redesign/HANDOFF.md` (운영 기준 + 와이어프레임 + 마이그레이션)
-- **사업성 v1.2:** `/Users/sujicho/Workspace/work/outputs/odl_business/criteria/v1.2_20260519/20260519_ODL BM 리드 사업성 판단 기준 v1.2.md`
-- **사업성 v1.1 (직전):** `/Users/sujicho/Workspace/work/outputs/odl_business/criteria/v1.1_20260514/`
+- **사업성 v1.2:** `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.2_20260519/20260519_ODL BM 리드 사업성 판단 기준 v1.2.md`
+- **사업성 v1.1 (직전):** `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.1_20260514/`
 - **figma 순서도:** https://www.figma.com/board/JcjgcBk4YupmXr4CnISIqb/ODL-BM-순서도
 - **ODL Design System:** `~/Workspace/work/outputs/methodology/design_systems/odl/`
 - **로컬 tracker (마이그레이션 후 archive):** `~/Workspace/work/outputs/odl_business/contacts/biz_contact_tracker.md`
 
 ## 변경 이력
+
+### v2.1.1 (2026-05-20) — 인포그래픽 매크로 보존 룰 + 종료 사유 리프레이밍
+
+- 🛡️ **인포그래픽 매크로 보존 룰** 신규: 페이지 C·D body 갱신 시 `<ac:image>` 매크로 자동 보존 (회귀 방지). Python 패턴·금지 패턴·예외 명시
+- 종료 사유 리프레이밍: `[사업성 없음]` → `[이어갈 요구사항 없음]` · `[콜드 메일 필수]` → `[콜드 메일 라인업]`
+- 종료 정의 추가: 별도 종료 통보 X · Phase 0에서는 break-up 메일도 X
+- 이탈 #2 정책 v1.0: 산업·유형별 자동 종료 임계 (페이지 C 5-0 참조)
+- Partnership → **Partnership / Marketing 공통 트랙** 4단계 (탐색·협의·합의·운영)
+- 페이지 D에 2107052902 콘텐츠 통합 (검증 22건·변경 이력·근거 자료). 2107052902는 archive redirect
 
 ### v2.1 (2026-05-19) — 전면 개편
 
@@ -479,6 +540,6 @@ mcp__claude_ai__updateConfluencePage
 - 사업성 v1.0 → **v1.2** (자동 +1 룰 + 지역 보정 + 비주류 섹터 명확화)
 - Status 3-tier → **4-tier** (요구사항 확인 완료 추가)
 - 프리픽스 11개 → **12개** + 종료 사유 2개
-- 그룹 분류 추가 (Active / 콜드 메일 풀 / 종료 배제)
+- 그룹 분류 추가 (Active / 콜드 메일 라인업 / 종료 배제)
 - 트리거 수동 → **수동 + cron 08:00 자동** 병행
 - 시각화 룰: 페이지 A 섹션 0 ASCII art (매 sync), 인포그래픽 PNG는 별도 태스크
