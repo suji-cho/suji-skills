@@ -27,6 +27,7 @@ Or browse and install interactively:
 /suji-medium-sync          # ODL Medium+Github 페이지 즉시 갱신
 /suji-doc-structure        # 프로젝트 문서 생성·정리·진단
 /suji-claude-guide         # Claude Code 프로젝트 체계 안내
+/suji-ppt-light-purple     # 라이트 배경 + 인디고(#200066) 액센트 한컴 공식 톤 PPTX 생성
 ```
 
 ## Auto-Update
@@ -63,6 +64,7 @@ Or enable auto-update permanently in `~/.claude/settings.json`:
 | [suji-medium-sync](./skills/suji-medium-sync) | ODL Medium+Github 페이지 즉시 갱신 — medium_confluence_sync GitHub Actions 수동 trigger + watch + 결과 보고 |
 | [suji-doc-structure](./skills/suji-doc-structure) | 프로젝트 문서 관리 — HANDOFF/design/TODO 등 표준 문서명 선택, 폴더 구조 세팅, 문서 간 연결 규칙 적용 |
 | [suji-claude-guide](./skills/suji-claude-guide) | Claude Code 체계 안내 — .claude 폴더 구조, 메모리 시스템, 스킬 만들기, settings.json, 플랜 모드 가이드 |
+| [suji-ppt-light-purple](./skills/suji-ppt-light-purple) | 라이트 배경 + 딥 인디고(#200066) 액센트의 한컴 공식 톤 PPTX 생성 — Pretendard 폰트, 패턴 A~T 카탈로그, Phase 1/2 게이트 |
 
 ### suji-confluence-publish
 
@@ -131,6 +133,17 @@ Claude Code 프로젝트 체계에 대한 레퍼런스 가이드.
 - 메모리 시스템 (user/feedback/project/reference/doc 타입, MEMORY.md 인덱스)
 - 스킬 시스템 (`suji-` 접두사, frontmatter 규격)
 - 플랜 모드, settings.json 설정
+
+### suji-ppt-light-purple
+
+라이트 배경 + 딥 인디고(#200066) 액센트의 한국 기업·공식 컨퍼런스 톤 PPTX 생성.
+
+- LAYOUT_WIDE (13.33"×7.5") 캔버스, Pretendard 폰트 5단계
+- 인디고/진보라/라일락/그레이 4톤 팔레트, 본문 텍스트 #000000 기본
+- 패턴 A~T 카탈로그 (`references/layout-patterns.md`) — 표지/섹션/그리드/카드/넘버/비교/목업 망라
+- 한컴 deck 분석 기반 두 가지 고유 패널 추가: 3컬럼 환경 진단 카드, Pain Point/Workflow/Key Feature 패널
+- 자매 스킬 `bundo-skills:bundo-ppt-ember`(다크+주황)와 패턴 호환, 토큰만 다름
+- Phase 1(시나리오 설계) ↔ Phase 2(PPTX 생성) 사이 사용자 확인 게이트 필수
 
 ## More
 
