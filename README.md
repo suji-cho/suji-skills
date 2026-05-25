@@ -28,6 +28,7 @@ Or browse and install interactively:
 /suji-doc-structure        # 프로젝트 문서 생성·정리·진단
 /suji-claude-guide         # Claude Code 프로젝트 체계 안내
 /suji-ppt-light-purple     # 라이트 배경 + 인디고(#200066) 액센트 한컴 공식 톤 PPTX 생성
+/suji-ppt-dark-orange      # 다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 모노톤 CEO 보고용 PPTX 생성
 ```
 
 ## Auto-Update
@@ -65,6 +66,7 @@ Or enable auto-update permanently in `~/.claude/settings.json`:
 | [suji-doc-structure](./skills/suji-doc-structure) | 프로젝트 문서 관리 — HANDOFF/design/TODO 등 표준 문서명 선택, 폴더 구조 세팅, 문서 간 연결 규칙 적용 |
 | [suji-claude-guide](./skills/suji-claude-guide) | Claude Code 체계 안내 — .claude 폴더 구조, 메모리 시스템, 스킬 만들기, settings.json, 플랜 모드 가이드 |
 | [suji-ppt-light-purple](./skills/suji-ppt-light-purple) | 라이트 배경 + 딥 인디고(#200066) 액센트의 한컴 공식 톤 PPTX 생성 — Pretendard 폰트, 패턴 A~T 카탈로그, Phase 1/2 게이트 |
+| [suji-ppt-dark-orange](./skills/suji-ppt-dark-orange) | 다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 4단조의 CEO·임원 보고용 모노톤 PPTX 생성 — Pretendard, 거대 타이포 표지·PART 챕터 디바이더·수치 비교 행 시그니처 패턴 |
 
 ### suji-confluence-publish
 
@@ -144,6 +146,21 @@ Claude Code 프로젝트 체계에 대한 레퍼런스 가이드.
 - 한컴 deck 분석 기반 두 가지 고유 패널 추가: 3컬럼 환경 진단 카드, Pain Point/Workflow/Key Feature 패널
 - 자매 스킬 `bundo-skills:bundo-ppt-ember`(다크+주황)와 패턴 호환, 토큰만 다름
 - Phase 1(시나리오 설계) ↔ Phase 2(PPTX 생성) 사이 사용자 확인 게이트 필수
+
+### suji-ppt-dark-orange
+
+다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 4단조의 CEO·임원 보고용 모노톤 PPTX 생성.
+
+- LAYOUT_WIDE (13.33"×7.5") 캔버스, Pretendard ExtraBold/Regular 2-tone 중심
+- 흑(#000000) + 카드 다크(#1A1A22/#2A2A33/#3A3A45) + 주황 단독 + 그레이 4단(#B0BEC5/#8A8F99/#5A5F69) — 다채로움 절제, 모노톤 정체성
+- 한컴 CEO deck 분석 기반 4가지 시그니처 패턴 추가:
+  - 거대 타이포 표지 (THE 30pt + SHIFT 64pt 겹침)
+  - PART 챕터 디바이더 (전면 다크 + 작은 주황 PART 라벨 + 거대 44pt 흰 제목)
+  - 수치 비교 행 (현재값 그레이 → 화살표 주황 → 미래값 주황 + CAGR 알약 칩)
+  - 카테고리 카드 3단 (영문 9ptB + 한글 20ptB + 설명 14pt 세로 스택)
+- 챕터 칩 헤더 (좌상단 #2A2A33 박스 + 번호 + "PART N ┃ 섹션명" 라벨) 시그니처
+- 자매 스킬 ember(다채로움) / light-purple(라이트 인디고)와 패턴 카탈로그(A~T) 공유, 토큰만 다름
+- QA: 본문 텍스트가 흰색/B0BEC5만 사용했는지, 주황 객체가 슬라이드당 3개 이하인지 우선 검수
 
 ## More
 
