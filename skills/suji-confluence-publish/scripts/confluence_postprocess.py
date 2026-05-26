@@ -132,10 +132,73 @@ def transform_task_list(html: str) -> str:
     return ul_pattern.sub(replace_ul, html)
 
 
-def postprocess(html: str) -> str:
+LAYOUT_TYPES = {
+    "single": "single",
+    "two_equal": "two_equal",
+    "two_right_sidebar": "two_right_sidebar",
+    "two_left_sidebar": "two_left_sidebar",
+    "three_equal": "three_equal",
+    "three_with_sidebars": "three_with_sidebars",
+}
+
+
+def wrap_in_layout(html: str, layout_type: str = "two_equal", sidebar: str = "") -> str:
+    """
+    본문 전체를 Confluence storage format ac:layout 매크로로 래핑.
+
+    SKILL.md §2 룰: 콘텐츠 폭 제한 + 중앙 배치.
+
+    Args:
+        html: 본문 HTML
+        layout_type: single / two_equal / two_right_sidebar / two_left_sidebar / three_equal / three_with_sidebars
+        sidebar: 사이드바 셀에 들어갈 HTML (빈 문자열이면 빈 셀)
+
+    Returns:
+        ac:layout 매크로로 래핑된 storage format HTML
+    """
+    if layout_type not in LAYOUT_TYPES:
+        layout_type = "two_equal"
+
+    if layout_type == "single":
+        return (
+            f'<ac:layout>'
+            f'<ac:layout-section ac:type="single">'
+            f'<ac:layout-cell>{html}</ac:layout-cell>'
+            f'</ac:layout-section>'
+            f'</ac:layout>'
+        )
+
+    # two_equal·two_right_sidebar·two_left_sidebar — 2 cells
+    if layout_type.startswith("two_"):
+        sidebar_html = sidebar or '<p></p>'
+        return (
+            f'<ac:layout>'
+            f'<ac:layout-section ac:type="{layout_type}">'
+            f'<ac:layout-cell>{html}</ac:layout-cell>'
+            f'<ac:layout-cell>{sidebar_html}</ac:layout-cell>'
+            f'</ac:layout-section>'
+            f'</ac:layout>'
+        )
+
+    # three_equal·three_with_sidebars — 3 cells (본문은 가운데)
+    sidebar_html = sidebar or '<p></p>'
+    return (
+        f'<ac:layout>'
+        f'<ac:layout-section ac:type="{layout_type}">'
+        f'<ac:layout-cell>{sidebar_html}</ac:layout-cell>'
+        f'<ac:layout-cell>{html}</ac:layout-cell>'
+        f'<ac:layout-cell>{sidebar_html}</ac:layout-cell>'
+        f'</ac:layout-section>'
+        f'</ac:layout>'
+    )
+
+
+def postprocess(html: str, layout_type: str = None, sidebar: str = "") -> str:
     """전체 후처리 파이프라인."""
     html = transform_panels(html)
     html = transform_task_list(html)
+    if layout_type:
+        html = wrap_in_layout(html, layout_type, sidebar)
     return html
 
 
@@ -144,18 +207,50 @@ def main() -> None:
         print(__doc__)
         sys.exit(0 if len(sys.argv) >= 2 else 1)
 
-    input_path = Path(sys.argv[1])
+    args = sys.argv[1:]
+    layout_type = None
+    sidebar = ""
+
+    # --layout=<type> 옵션 파싱
+    filtered_args = []
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg.startswith("--layout="):
+            layout_type = arg.split("=", 1)[1]
+        elif arg == "--layout":
+            i += 1
+            if i < len(args):
+                layout_type = args[i]
+        elif arg.startswith("--sidebar="):
+            sidebar = arg.split("=", 1)[1]
+        elif arg == "--sidebar":
+            i += 1
+            if i < len(args):
+                sidebar = args[i]
+        else:
+            filtered_args.append(arg)
+        i += 1
+
+    if not filtered_args:
+        print(__doc__)
+        sys.exit(1)
+
+    input_path = Path(filtered_args[0])
     if not input_path.exists():
         print(f"Error: file not found: {input_path}", file=sys.stderr)
         sys.exit(1)
 
     html = input_path.read_text(encoding='utf-8')
-    result = postprocess(html)
+    result = postprocess(html, layout_type=layout_type, sidebar=sidebar)
 
-    if len(sys.argv) >= 3:
-        output_path = Path(sys.argv[2])
+    if len(filtered_args) >= 2:
+        output_path = Path(filtered_args[1])
         output_path.write_text(result, encoding='utf-8')
-        print(f"Output saved: {output_path} ({len(result)} chars)")
+        msg = f"Output saved: {output_path} ({len(result)} chars)"
+        if layout_type:
+            msg += f" — layout: {layout_type}"
+        print(msg)
     else:
         sys.stdout.write(result)
 

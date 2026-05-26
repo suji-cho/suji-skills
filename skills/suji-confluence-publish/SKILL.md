@@ -156,108 +156,192 @@ python3 scripts/md_to_confluence.py input.md /tmp/step1.html --toc \
 
 ---
 
-## 6. 업로드 (curl 방식 — MCP 우회)
+## 6. 업로드 (v1 API + curl — MCP 우회)
 
-MCP Atlassian 인증이 만료되거나 사용 불가일 때 curl로 직접 업로드.
+MCP `createConfluencePage`는 storage format 매크로(`<ac:structured-macro>`, `<ac:layout>`) 거부. **`<ac:layout>` 매크로 사용하려면 v1 API 필수**. odl-jira 스킬과 동일 패턴.
 
-### 6-1. API 토큰 (한 번만)
+### 6-1. 환경 변수 표준 — `HNC_JIRA_*` 통일
 
-발급: <https://id.atlassian.com/manage-profile/security/api-tokens>
-→ Create API token → 이름 입력 → Copy → 안전한 곳 저장 (한 번만 표시).
+odl-jira와 공통. `~/.zshrc`에 영구 보존.
 
-### 6-2. 환경 변수 (세션 또는 영구)
+| 변수 | 값 |
+|---|---|
+| `HNC_JIRA_URL` | `https://hancom.atlassian.net` |
+| `HNC_JIRA_EMAIL` | 인증 이메일 |
+| `HNC_JIRA_TOKEN` | API 토큰 ([발급](https://id.atlassian.com/manage-profile/security/api-tokens)) |
 
-세션:
+활성:
 ```bash
-export ATLASSIAN_EMAIL="suji.cho@hancom.com"
-export ATLASSIAN_TOKEN="발급받은_토큰"
-export DOMAIN="hancom.atlassian.net"
+source ~/.zshrc
+JIRA_AUTH=$(echo -n "${HNC_JIRA_EMAIL}:${HNC_JIRA_TOKEN}" | base64)
+JIRA_URL="${HNC_JIRA_URL}"
 ```
 
-영구 보존: `~/.zshrc` 등에 추가. 단 git·KB 노출 주의.
+→ `ATLASSIAN_*` 별도 변수 사용 안 함 (이전 가이드 폐기).
 
-토큰 확인:
+### 6-2. CQL 사전 검색 — 중복 제목 회피
+
+페이지 생성 전 동일 제목 존재 여부 확인. 중복 시 "title already exists" 오류 방지.
+
 ```bash
-echo "Email: $ATLASSIAN_EMAIL / Token 길이: ${#ATLASSIAN_TOKEN}"
-# 보통 192자
+SPACE_KEY="OSS1"
+TITLE_KEYWORD="가독성가이드"  # 부분 일치 검색
+
+curl -s -o /tmp/cql_result.json -w "%{http_code}" -G \
+  -H "Authorization: Basic ${JIRA_AUTH}" \
+  -H "Accept: application/json" \
+  --data-urlencode "cql=space=${SPACE_KEY} AND title~\"${TITLE_KEYWORD}\"" \
+  --data-urlencode "limit=10" \
+  "${JIRA_URL}/wiki/rest/api/content/search"
+
+python3 -c "
+import json
+d = json.load(open('/tmp/cql_result.json'))
+for r in d.get('results', []):
+    print(f\"{r['id']} - {r['title']}\")
+"
 ```
 
-### 6-3. 페이지 생성
+→ 결과 있으면 제목 조정 (`_v2`, `_test1` 등) 또는 기존 페이지 update 결정.
+
+### 6-3. 페이지 생성 (POST)
 
 ```bash
-# 변수 정의
+# 변수
 HTML_FILE="/tmp/final.html"
 TITLE="yyyymmdd_제목"
-PARENT_ID="<folder_or_page_id>"
-SPACE_KEY="<space_key>"
+PARENT_ID="<parent_page_or_folder_id>"
+SPACE_KEY="OSS1"
 
-# JSON body
-jq -n \
-  --arg title "$TITLE" \
-  --rawfile body "$HTML_FILE" \
-  --arg parent "$PARENT_ID" \
-  --arg space "$SPACE_KEY" \
-  '{
-    type: "page",
-    title: $title,
-    space: {key: $space},
-    ancestors: [{id: $parent}],
-    body: {storage: {value: $body, representation: "storage"}}
-  }' > /tmp/page_create.json
+# JSON body (Write 도구로 .py 파일 사용 권장 — 대용량 본문 처리)
+python3 - <<EOF > /tmp/page_create.json
+import json
+body = open("$HTML_FILE").read()
+json.dump({
+    "type": "page",
+    "title": "$TITLE",
+    "space": {"key": "$SPACE_KEY"},
+    "ancestors": [{"id": "$PARENT_ID"}],
+    "body": {"storage": {"value": body, "representation": "storage"}}
+}, open("/dev/stdout", "w"), ensure_ascii=False)
+EOF
 
 # POST
-curl -X POST -s \
-  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_TOKEN" \
+HTTP_CODE=$(curl -s -o /tmp/page_response.json -w "%{http_code}" -X POST \
+  -H "Authorization: Basic ${JIRA_AUTH}" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  "https://$DOMAIN/wiki/rest/api/content" \
-  -d @/tmp/page_create.json \
-  > /tmp/page_response.json
+  "${JIRA_URL}/wiki/rest/api/content" \
+  -d @/tmp/page_create.json)
 
-# 결과
-if grep -q '"id"' /tmp/page_response.json; then
-  echo "✅ 성공"
-  jq -r '"제목: \(.title)\nID: \(.id)\nURL: \(._links.base)\(._links.webui)"' /tmp/page_response.json
+if [ "$HTTP_CODE" = "200" ]; then
+  python3 -c "
+import json
+d = json.load(open('/tmp/page_response.json'))
+print(f\"✅ 성공\")
+print(f\"제목: {d['title']}\")
+print(f\"ID: {d['id']}\")
+print(f\"URL: {d['_links']['base']}{d['_links']['webui']}\")
+"
 else
-  echo "❌ 실패"
-  jq -r '.message // .' /tmp/page_response.json
+  echo "❌ 실패 (HTTP $HTTP_CODE)"
+  python3 -c "import json; print(json.load(open('/tmp/page_response.json')).get('message', ''))"
 fi
 ```
 
-### 6-4. 페이지 업데이트 (기존 페이지)
+### 6-4. 페이지 업데이트 (PUT) — version 충돌 회피
 
-생성 대신 PUT — version 번호 필요:
+odl-jira 패턴:
+
 ```bash
-PAGE_ID="<existing_page_id>"
-NEW_VERSION="<current_version + 1>"
+PAGE_ID="2160099970"
+TITLE="20260526_가독성가이드_v2.0_미니멀"
 
-# md_to_confluence.py --json 옵션 활용 (버전 포함 JSON 생성)
-python3 scripts/md_to_confluence.py input.md \
-  --json /tmp/page_update.json \
-  --title "$TITLE" \
-  --version $NEW_VERSION \
-  --message "v2.0 업데이트" \
-  --toc
+# 1. 최신 version GET
+HTTP_CODE=$(curl -s -o /tmp/version.json -w "%{http_code}" \
+  -H "Authorization: Basic ${JIRA_AUTH}" \
+  "${JIRA_URL}/wiki/rest/api/content/${PAGE_ID}?expand=version")
 
-# 후처리는 별도 스텝 — JSON 안 body.storage.value만 후처리 필요 (TODO)
+CURRENT_VERSION=$(python3 -c "import json; print(json.load(open('/tmp/version.json'))['version']['number'])")
+NEW_VERSION=$((CURRENT_VERSION + 1))
 
-curl -X PUT -s \
-  -u "$ATLASSIAN_EMAIL:$ATLASSIAN_TOKEN" \
+# 2. JSON build (Write 도구로 .py 파일 작성)
+python3 /tmp/build_update.py  # body + title + version=NEW_VERSION
+
+# 3. PUT
+HTTP_CODE=$(curl -s -o /tmp/update_response.json -w "%{http_code}" -X PUT \
+  -H "Authorization: Basic ${JIRA_AUTH}" \
   -H "Content-Type: application/json" \
-  "https://$DOMAIN/wiki/rest/api/content/$PAGE_ID" \
-  -d @/tmp/page_update.json
+  "${JIRA_URL}/wiki/rest/api/content/${PAGE_ID}" \
+  -d @/tmp/page_update.json)
+
+# 409 Conflict → 최신 version 재조회 후 1회 재시도
 ```
 
-> 자세한 PUT·409 충돌·이미지 순서는 `/bundo-jira` 스킬 참조.
+### 6-5. Curl 안전 패턴 (필수)
 
-### 6-5. 흔한 오류
+odl-jira "함정 & 필수 규칙":
+
+```bash
+# ✅ 올바름 — 파일 분리 + HTTP code 확인
+HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" ...)
+if [ "$HTTP_CODE" = "200" ]; then
+  python3 -c "import json; d=json.load(open('/tmp/response.json'))"
+fi
+
+# ❌ 금지 — JSONDecodeError 위험
+curl ... | python3 -c "..."
+
+# ✅ 올바름 — 대용량 본문 .py 파일로
+python3 /tmp/build_body.py  # 별도 스크립트
+curl -d @/tmp/body.json ...
+
+# ❌ 금지 — ARG_MAX, 이스케이프 문제
+curl -d '{"body":{...}}' ...    # 인라인 큰 본문
+python3 -c "..."                # 인라인 긴 코드
+```
+
+### 6-6. 흔한 오류
 
 | 오류 | 진단 | 해결 |
 |---|---|---|
 | `401 Unauthorized` | 토큰 잘못/만료 | API 토큰 재발급 |
 | `403 Forbidden` | 스페이스 권한 없음 | 권한 요청 |
-| `400 title already exists` | 동일 제목 페이지 존재 | TITLE 수정 (`_test` 추가 등) |
+| `400 title already exists` | 동일 제목 페이지 존재 | §6-2 CQL 사전 검색 사용 |
+| `409 Conflict` | version 충돌 | 최신 version 재조회 후 1회 재시도 |
 | `parentId not found` | parent ID 무효 | folder·page ID 재확인 |
+
+---
+
+## 7. 사이드 셀 컨벤션 (Suji 표준)
+
+`--layout=two_equal` (또는 `two_right_sidebar`) 사용 시 사이드 셀에 들어갈 표준 메타 정보.
+
+```html
+<p><strong>작성자</strong>: Suji Cho</p>
+<p><strong>작성일</strong>: yyyy-mm-dd</p>
+<p><strong>버전</strong>: vN.M</p>
+<p><strong>연관 문서</strong>:</p>
+<ul>
+  <li><a href="...">README</a></li>
+  <li><a href="...">관련 자료</a></li>
+</ul>
+```
+
+### 호출 예시
+
+```bash
+# 1. 변환
+python3 scripts/md_to_confluence.py input.md /tmp/step1.html --toc
+
+# 2. 후처리 + layout 래핑 (사이드 셀 메타 정보)
+SIDEBAR='<p><strong>작성자</strong>: Suji Cho</p><p><strong>작성일</strong>: 2026-05-26</p><p><strong>버전</strong>: v2.0</p>'
+python3 scripts/confluence_postprocess.py /tmp/step1.html /tmp/final.html \
+  --layout=two_equal \
+  --sidebar="$SIDEBAR"
+
+# 3. 업로드 — §6-3 (POST) 또는 §6-4 (PUT)
+```
 
 ---
 
@@ -267,12 +351,16 @@ curl -X PUT -s \
 input.md (마크다운 원본)
    ↓
 [1] python3 scripts/md_to_confluence.py
-   ↓ /tmp/step1.html
-[2] python3 scripts/confluence_postprocess.py
-   ↓ /tmp/final.html  (매크로 + task-list 변환)
-[3] curl POST /wiki/rest/api/content
+   ↓ /tmp/step1.html  (기본 storage format)
+[2] python3 scripts/confluence_postprocess.py --layout=two_equal --sidebar="..."
+   ↓ /tmp/final.html  (매크로 + task-list + ac:layout 래핑)
+[3] §6-2 CQL 사전 검색 (중복 확인)
    ↓
-Confluence 페이지 생성
+[4] curl POST or PUT /wiki/rest/api/content
+   ↓
+Confluence 페이지 생성/업데이트
 ```
 
-세 스크립트는 항상 이 순서. 후처리(2단계)를 건너뛰면 매크로·체크리스트가 평탄한 blockquote / 일반 list로 떨어진다.
+위 4단계를 항상 이 순서로 진행. 후처리(2단계)·CQL 검색(3단계)을 건너뛰면 매크로 누락 또는 중복 오류 발생.
+
+→ 모든 `suji-*` 스킬의 Confluence 업로드는 이 표준 흐름을 따른다.
