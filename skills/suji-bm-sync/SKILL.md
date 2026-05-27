@@ -35,7 +35,7 @@ Gmail OSS/BIZ contact 라벨을 단일 데이터 소스로 5개 Confluence 페�
 
 ## 데이터 소스
 
-- **Gmail 라벨:** OSS/BIZ contact (Label ID `Label_4901978024770138907`)
+- **Gmail 라벨:** OSS/BIZ contact (Label ID `Label_4901978024770138907`) — ⚠️ 검색 쿼리는 **라벨명** `label:"OSS/BIZ contact"`만 동작. 라벨 ID 직접 쿼리는 빈 결과. (Step 2 참조)
 - URL: `https://mail.google.com/mail/u/0/#label/OSS%2FBIZ+contact`
 - **단일 소스**. GitHub Issues·대시보드 수치 등 다른 소스는 본 스킬에서 사용하지 않음 (BM 보고서 별도 흐름).
 
@@ -174,13 +174,12 @@ mcp__claude_ai__getConfluencePage
 
 ```
 mcp__claude_ai_Gmail__search_threads
-  q: "label:OSS/BIZ-contact newer_than:35d"
+  q: 'label:"OSS/BIZ contact" newer_than:35d'
 ```
 
-또는 라벨 ID 직접 사용:
-```
-q: "label:Label_4901978024770138907 newer_than:35d"
-```
+> ⚠️ **라벨 쿼리 주의 (2026-05-27 검증):** **라벨명 쿼리 `label:"OSS/BIZ contact"`만 정상 동작**한다.
+> 라벨 ID 직접 쿼리(`label:Label_4901978024770138907`)는 **빈 결과 `{}`를 반환**하므로 사용하지 말 것.
+> 라벨명에 공백·슬래시가 있으므로 반드시 큰따옴표로 감싼다 (`label:OSS/BIZ-contact` 하이픈 치환형도 동작).
 
 각 thread에 대해:
 ```
@@ -235,6 +234,8 @@ mcp__claude_ai_Gmail__get_thread
 | Status 요구사항 확인 완료 → 우리/상대 | 내부 작업 완료 단서 + 외부 액션 단계 |
 | Stage 다음 단계 | 단계별 진입 조건 충족 (`HANDOFF.md` 섹션 3-1) |
 | Stage 11 이탈 진입 | 이탈 게이트 4개 중 하나 진입 조건 충족 |
+
+> ⚠️ **발신 방향·실제 발송일 판정 주의 (2026-05-27 검증):** SENT 라벨 메시지라도 `toRecipients`가 **자기 주소(`open.dataloader@hancom.com`)이면 검토용 자기발송 초안**이며 **고객에게 실제 발송된 것이 아니다**. 동일 본문이 며칠 뒤 **실제 외부 주소로 다시 SENT**되는 패턴이 있으므로, `last_outbound_date`·대기일은 **실제 수신자 주소로 나간 메시지 날짜** 기준으로 산정한다. (예: 5/18 자기주소 검토본 → 5/21 실제 발송 = last_outbound 5/21)
 
 #### 3-C. 프리픽스 자동 판정
 
@@ -523,6 +524,12 @@ if m:
 - **로컬 tracker (마이그레이션 후 archive):** `~/Workspace/work/outputs/odl_business/contacts/biz_contact_tracker.md`
 
 ## 변경 이력
+
+### v2.1.2 (2026-05-27) — Gmail 쿼리·발신 방향 판정 검증 캐비엇
+
+- ⚠️ **Gmail 라벨 쿼리 수정**: 라벨 ID 직접 쿼리(`label:Label_...`)는 빈 결과 반환 → **라벨명 쿼리 `label:"OSS/BIZ contact"`만 동작**. Step 2 + 데이터 소스에 명시
+- ⚠️ **발신 방향 판정 캐비엇** (Step 3-B): SENT라도 `toRecipients`가 자기 주소면 검토용 초안 → 실제 외부 발송일 기준으로 `last_outbound_date`·대기일 산정
+- 페이지 A 섹션 8 md 줄글 = 보고용 3그룹 로스터 양식 (요구사항 확인 완료 / 답변 대기 / 이어갈 요구사항 없음) 적용 사례 (5/27 sync)
 
 ### v2.1.1 (2026-05-20) — 인포그래픽 매크로 보존 룰 + 종료 사유 리프레이밍
 
