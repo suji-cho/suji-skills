@@ -97,18 +97,34 @@ python3 scripts/md_to_confluence.py input.md --json /tmp/confluence_update.json 
 
 ## 5. 후처리: confluence_postprocess.py (필수)
 
-`md_to_confluence.py` 출력만으로는 매크로·체크리스트가 평탄한 blockquote / 일반 list로 떨어진다. 후처리로 Confluence 네이티브 매크로 변환.
+`md_to_confluence.py` 출력만으로는 매크로·체크리스트가 평탄한 blockquote / 일반 list로 떨어진다. 후처리로 Confluence 네이티브 매크로 변환 + **폭·여백 일관성**.
+
+### 깨짐 방지 — 구조적 해결책 (v2)
+
+| 문제 | 원인 | 해결 (스크립트 내장) |
+|---|---|---|
+| **폭** 매번 다름 | `--layout` 옵션 빠뜨림 | **기본값 `two_equal` 강제** (생략 가능) |
+| **여백** 사라짐 | Confluence가 연속 빈 줄 압축 | **`<hr/>` 뒤 빈 단락 자동 삽입** |
+| **매크로** 평탄 | md_to_confluence 미지원 | 패널·task-list 변환 |
 
 ```bash
 # 1단계: 기본 변환
 python3 scripts/md_to_confluence.py input.md /tmp/step1.html --toc
 
-# 2단계: 매크로·체크리스트 후처리
+# 2단계: 후처리 (기본 layout=two_equal + spacer 자동)
 python3 scripts/confluence_postprocess.py /tmp/step1.html /tmp/final.html
 
-# 또는 파이프
-python3 scripts/md_to_confluence.py input.md /tmp/step1.html --toc \
-  && python3 scripts/confluence_postprocess.py /tmp/step1.html > /tmp/final.html
+# 사이드바 메타 정보 포함
+python3 scripts/confluence_postprocess.py /tmp/step1.html /tmp/final.html \
+  --sidebar="$SIDEBAR_HTML"
+
+# 다른 layout 명시
+python3 scripts/confluence_postprocess.py /tmp/step1.html /tmp/final.html \
+  --layout=two_right_sidebar
+
+# layout 비활성 (full-width)
+python3 scripts/confluence_postprocess.py /tmp/step1.html /tmp/final.html \
+  --layout=none
 ```
 
 ### 변환 룰
@@ -122,6 +138,18 @@ python3 scripts/md_to_confluence.py input.md /tmp/step1.html --toc \
 | `> Error 매크로\n> 본문` | `<div data-type="panel-error">` |
 | `- [ ] 항목` | `<ul data-type="task-list"><li data-type="task-item"><input type="checkbox" /> 항목</li></ul>` |
 | `- [x] 항목` | task-list + `data-task-state="DONE"` + `checked` |
+| `---` (hr) | `<hr/>` + 빈 단락 spacer (여백 보존) |
+| 전체 본문 | `<ac:layout-section ac:type="two_equal">` 안 래핑 (기본) |
+
+### Confluence 디자인 한계 (정직한 명시)
+
+| 항목 | 가능 | 불가능 |
+|---|---|---|
+| 폭 | `ac:layout` 매크로 단계 (single·two_equal·sidebar) | px·CSS `max-width` |
+| 여백 | spacer 단락, hr | CSS `margin`·`padding` |
+| 색·폰트 | 매크로 한정 | 자유 스타일 |
+
+→ **정밀 디자인은 HTML/PDF, Confluence는 "읽기 좋은 수준"까지**. 둘은 용도 분리.
 
 ### 마크다운 작성 컨벤션
 

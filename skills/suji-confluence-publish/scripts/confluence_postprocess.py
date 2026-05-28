@@ -193,11 +193,31 @@ def wrap_in_layout(html: str, layout_type: str = "two_equal", sidebar: str = "")
     )
 
 
-def postprocess(html: str, layout_type: str = None, sidebar: str = "") -> str:
-    """전체 후처리 파이프라인."""
+def transform_spacers(html: str) -> str:
+    """
+    섹션 spacer 자동 삽입 — Confluence가 연속 빈 줄을 압축하므로 hr 뒤 빈 단락으로 명시.
+    SKILL.md §2: 여백 일관성. h2/h3 등 헤더 앞에서도 호흡 확보.
+    """
+    # 1) hr 뒤에 빈 단락이 없으면 삽입 (한 줄 여백)
+    html = re.sub(
+        r'<hr\s*/?>(?!\s*<p>)',
+        '<hr/><p><br/></p>',
+        html,
+    )
+    # 2) 연속된 hr 사이 중복 방지 — 이미 처리됨
+    return html
+
+
+def postprocess(html: str, layout_type: str = "two_equal", sidebar: str = "") -> str:
+    """전체 후처리 파이프라인.
+
+    기본 layout = two_equal (본문 ~500px). 명시적으로 `single` 또는 비활성화 시 변경.
+    spacer는 항상 적용 (Confluence 빈 줄 압축 회피).
+    """
     html = transform_panels(html)
     html = transform_task_list(html)
-    if layout_type:
+    html = transform_spacers(html)
+    if layout_type and layout_type != "none":
         html = wrap_in_layout(html, layout_type, sidebar)
     return html
 
@@ -208,7 +228,7 @@ def main() -> None:
         sys.exit(0 if len(sys.argv) >= 2 else 1)
 
     args = sys.argv[1:]
-    layout_type = None
+    layout_type = "two_equal"  # 기본 강제 (폭 일관성)
     sidebar = ""
 
     # --layout=<type> 옵션 파싱
