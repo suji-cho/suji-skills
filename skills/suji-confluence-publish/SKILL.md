@@ -392,3 +392,69 @@ Confluence 페이지 생성/업데이트
 위 4단계를 항상 이 순서로 진행. 후처리(2단계)·CQL 검색(3단계)을 건너뛰면 매크로 누락 또는 중복 오류 발생.
 
 → 모든 `suji-*` 스킬의 Confluence 업로드는 이 표준 흐름을 따른다.
+
+---
+
+## 8. publish.py — 원샷 (권장 진입점)
+
+위 4단계를 단일 명령으로 일괄 실행. 매번 동일 결과 보장.
+
+```bash
+python3 scripts/publish.py input.md \
+  --title "20260528_가독성가이드_v2.1_미니멀" \
+  --space OSS1 \
+  --parent 1902903831
+```
+
+### 옵션
+
+| 옵션 | 기본값 | 설명 |
+|---|---|---|
+| `--title` | (필수) | 페이지 제목 (yyyymmdd_제목 컨벤션) |
+| `--space` | (필수) | Confluence 스페이스 키 |
+| `--parent` | (필수) | 부모 페이지 또는 폴더 ID |
+| `--sidebar` | 빈 | 사이드 셀 HTML 직접 입력 |
+| `--sidebar-file` | 없음 | 사이드 셀 HTML 파일 경로 (긴 콘텐츠) |
+| `--layout` | `two_equal` | ac:layout 타입 (none으로 비활성) |
+| `--no-toc` | off | TOC 매크로 비활성화 |
+| `--force-create` | off | CQL 검색 건너뛰고 무조건 새 생성 |
+
+### 동작
+
+1. **변환** — md_to_confluence.py → /tmp/publish_step1.html
+2. **후처리** — confluence_postprocess.py (panel · task-list · spacer · layout)
+3. **CQL 검색** — 동일 제목 페이지 검색
+4. **PUT / POST**
+   - 존재 시: version GET → +1 → PUT (업데이트)
+   - 없으면: POST (신규 생성)
+5. 결과 URL 출력
+
+### 의존성
+
+- 환경 변수: `HNC_JIRA_URL`, `HNC_JIRA_EMAIL`, `HNC_JIRA_TOKEN` (~/.zshrc)
+- md_to_confluence.py: odl-jira 또는 bundo-jira 스킬 (자동 탐색)
+- confluence_postprocess.py: 같은 디렉토리
+
+### 사이드 셀 (Suji 표준)
+
+```bash
+SIDEBAR='<p><strong>작성자</strong>: Suji Cho</p><p><strong>작성일</strong>: 2026-05-28</p><p><strong>버전</strong>: v2.1</p>'
+python3 scripts/publish.py input.md \
+  --title "..." --space OSS1 --parent 1902903831 \
+  --sidebar="$SIDEBAR"
+```
+
+→ §7 사이드 셀 컨벤션 참조.
+
+### 예시 — 가독성 가이드 업로드
+
+```bash
+python3 scripts/publish.py \
+  ~/Workspace/work/outputs/methodology/readability_guide/confluence/minimal.md \
+  --title "20260528_가독성가이드_v2.1_미니멀" \
+  --space OSS1 \
+  --parent 1902903831 \
+  --sidebar="<p><strong>작성자</strong>: Suji Cho</p><p><strong>버전</strong>: v2.1</p>"
+```
+
+→ 결과: 페이지 생성/업데이트 + URL 출력.
