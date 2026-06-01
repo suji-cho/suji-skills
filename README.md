@@ -29,6 +29,8 @@ Or browse and install interactively:
 /suji-claude-guide         # Claude Code 프로젝트 체계 안내
 /suji-ppt-light-purple     # 라이트 배경 + 인디고(#200066) 액센트 한컴 공식 톤 PPTX 생성
 /suji-ppt-dark-orange      # 다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 모노톤 CEO 보고용 PPTX 생성
+/suji-ppt-dark-trio        # 다크 배경 + 주황(#DD5C28) 주조 + 블루·에메랄드 서브 2색 글로벌 파트너 제안용 PPTX 생성
+/suji-ppt-light-trio       # 라이트 배경 + 주황(#E8500F) 주조 + 블루·에메랄드 서브 2색 글로벌 파트너 제안용 PPTX 생성
 ```
 
 ## Auto-Update
@@ -67,6 +69,8 @@ Or enable auto-update permanently in `~/.claude/settings.json`:
 | [suji-claude-guide](./skills/suji-claude-guide) | Claude Code 체계 안내 — .claude 폴더 구조, 메모리 시스템, 스킬 만들기, settings.json, 플랜 모드 가이드 |
 | [suji-ppt-light-purple](./skills/suji-ppt-light-purple) | 라이트 배경 + 딥 인디고(#200066) 액센트의 한컴 공식 톤 PPTX 생성 — Pretendard 폰트, 패턴 A~T 카탈로그, Phase 1/2 게이트 |
 | [suji-ppt-dark-orange](./skills/suji-ppt-dark-orange) | 다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 4단조의 CEO·임원 보고용 모노톤 PPTX 생성 — Pretendard, 거대 타이포 표지·PART 챕터 디바이더·수치 비교 행 시그니처 패턴 |
+| [suji-ppt-dark-trio](./skills/suji-ppt-dark-trio) | 다크 배경 + 주황(#DD5C28) 주조 + 스카이블루(#4A8FE0)·에메랄드(#34C77B) 서브 2색의 글로벌 파트너 제안용 PPTX — 중첩 보더 카드 시그니처, 패턴 A~T 공유 + trio 고유 U~Z |
+| [suji-ppt-light-trio](./skills/suji-ppt-light-trio) | 라이트 배경 + 주황(#E8500F) 주조 + 스카이블루(#2E72C8)·에메랄드(#1FA968) 서브 2색의 글로벌 파트너 제안용 PPTX — dark-trio의 라이트 변종, 색·명도 토큰만 반전 |
 
 ### suji-confluence-publish
 
@@ -161,6 +165,25 @@ Claude Code 프로젝트 체계에 대한 레퍼런스 가이드.
 - 챕터 칩 헤더 (좌상단 #2A2A33 박스 + 번호 + "PART N ┃ 섹션명" 라벨) 시그니처
 - 자매 스킬 ember(다채로움) / light-purple(라이트 인디고)와 패턴 카탈로그(A~T) 공유, 토큰만 다름
 - QA: 본문 텍스트가 흰색/B0BEC5만 사용했는지, 주황 객체가 슬라이드당 3개 이하인지 우선 검수
+
+### suji-ppt-dark-trio
+
+다크 배경 + 주황(#DD5C28) 주조색 + 스카이블루(#4A8FE0)·에메랄드(#34C77B) 서브 2색의 글로벌 파트너 제안용 PPTX 생성.
+
+- 한컴 정체성(주황) 유지 + 서브 2색으로 듀얼 비교·KPI·노드 카테고리 색-코딩
+- **중첩 보더 카드** 시그니처 패턴 (외곽 보더 + 내부 컨텐츠 카드 구조)
+- 모듈러 스케일 1.25 기반 폰트 (표지 70pt, THANK YOU 88pt, 디바이더 56pt)
+- 자매 스킬과 패턴 카탈로그 A~T 공유 + trio 고유 패턴 U~Z 추가
+- 3-Phase Cycle (Double Diamond) + Gate별 자가 비평 루틴(I Like/I Wish/What If)
+- 자매 스킬: `dark-orange`(CEO 단정 보고), `light-purple`(공식 기업 제안), `bundo-ppt-ember`(컨퍼런스 활기)
+
+### suji-ppt-light-trio
+
+`suji-ppt-dark-trio`의 라이트 버전 — 밝고 신뢰감 있는 흰 배경 글로벌 파트너 제안용 PPTX 생성.
+
+- 같은 3색 시스템·중첩 보더·이탤릭 금지 정체성 유지, 흰 배경 가독성을 위해 3색을 살짝 진하게 조정 (#E8500F / #2E72C8 / #1FA968)
+- dark-trio와 패턴(A~T, U~Z)·구조를 100% 공유, 색·명도 토큰만 라이트로 반전
+- 동일한 3-Phase Cycle + Gate 자가 비평 루틴 적용
 
 ## More
 
