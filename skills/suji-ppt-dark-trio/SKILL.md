@@ -20,13 +20,23 @@ description: 다크 배경 + 주황(#DD5C28) 주조색 + 스카이블루(#4A8FE0
 2. **중첩 보더 카드** — 모든 박스에 옅은 보더 + 안쪽으로 갈수록 밝아지는 명도 4단계. 솔리드 단색 카드 금지.
 3. **이탤릭 미사용** — 강조는 **색과 굵기로만**. `italic: true` 절대 금지 (dark-orange/PDF 원본과 다른 본 스킬의 핵심 차별점).
 
-## 워크플로우
+## 워크플로우 (3-Phase Cycle · Double Diamond 기반)
 
 ```
-1. 시나리오 설계 → 2. 레이아웃 선택 → 3. PPTX 생성
+시작 → 범위 명시 프롬프트: "오늘 어떤 결정에 대한 피드백이 필요한가요?"
+        ↓
+[Phase 1] 시나리오 설계 + 와이어프레임  — 메시지·구조·내러티브
+        ↓ [Gate 1: 메시지·구조 OK? → 자가 비평 3줄 동봉]
+[Phase 2] PPTX 생성 (시안)            — 시각화·레이아웃·패턴
+        ↓ [Gate 2: 디자인 OK? → 자가 비평 3줄 동봉]
+[Phase 3] 정교화 (Polish)             — 폰트·색·여백·아이콘·자간
+        ↓ [Gate 3: 디테일 OK?]
+   완료
 ```
 
-**Phase 1과 2 사이에 반드시 사용자 확인.** "기획서를 검토해주세요. 확인되면 생성하겠습니다."
+**각 Phase 종료 시 사용자 확인 의무.** 시안 제출 시 "자가 비평 루틴"(아래) 3줄 동봉.
+
+근거: UK Design Council Double Diamond (1st gate = 문제·메시지 / 2nd gate = 해법·디자인) + Google Design Critique 범위 명시 + Stanford d.school I Like/I Wish/What If. 상세 방법론: `~/Workspace/work/outputs/research/20260529_design_improvement_methodology.md`
 
 ---
 
@@ -34,7 +44,9 @@ description: 다크 배경 + 주황(#DD5C28) 주조색 + 스카이블루(#4A8FE0
 
 ### 사용자 인터뷰
 
-파악할 것: **주제**, **청중**(주로 해외 파트너사·리셀러·SI·투자자), **목표**(제휴·라이선스·파일럿), **분량** (기본 25-40장), **기존 콘텐츠**
+**먼저 1줄로 범위 명시**: "오늘 어떤 결정에 대한 피드백이 필요한가요?" — Google Design Critique 원칙. 범위 밖 의견은 별도 백로그로 분리.
+
+이어서 파악할 것: **주제**, **청중**(주로 해외 파트너사·리셀러·SI·투자자), **목표**(제휴·라이선스·파일럿), **분량** (기본 25-40장), **기존 콘텐츠**
 
 ### 구조 설계
 
@@ -111,23 +123,24 @@ const FONT = {
 };
 ```
 
-| 역할 | 크기 | fontFace | 색상 |
+**모듈러 스케일 1.25 (base 18pt)**: 9 / 12 / 14 / 18 / 22 / 28 / 36 / 44 / 56 / 70 / 88pt. 모든 폰트 사이즈는 이 스케일에 스냅.
+
+| 역할 | 크기 (스케일) | fontFace | 색상 |
 |------|------|----------|------|
-| 표지 대형 타이포 | 54~72pt | FONT.exbold/black | `#FFFFFF` |
-| 표지 부제 | 22~24pt | FONT.medium | `#B0BEC5` |
-| 디바이더 거대 제목 | 44~54pt | FONT.exbold | `#FFFFFF` (키워드만 주황) |
-| AI Solution 알약 라벨 | 13pt | FONT.exbold | `#DD5C28` |
-| 메인 헤드라인 | 28~38pt | FONT.exbold | `#FFFFFF` (키워드만 주황) |
-| 듀얼 카드 헤더 | 16pt | FONT.exbold | `#FFFFFF` (배경이 색) |
-| KPI 큰 숫자 | 42~46pt | FONT.exbold | `#34C77B` 에메랄드 |
-| KPI 증감률 | 14pt | FONT.bold | `#DD5C28` 주황 |
-| 카드 한글 큰 타이틀 | 20pt | FONT.exbold | `#FFFFFF` |
-| 카드 내 헤딩 | 16~18pt | FONT.exbold | `#FFFFFF` |
-| 슬라이드 부제 | 13~16pt | FONT.regular | `#B0BEC5` |
-| 본문 | 11~15pt | FONT.regular/medium | `#FFFFFF` 또는 `#B0BEC5` |
-| 영문 라벨 / 챕터 칩 | 8~13pt | FONT.exbold | `#FFFFFF` 또는 `#8A8F99` |
-| 캡션·메타 | 11~12pt | FONT.regular | `#8A8F99` |
-| 출처/footnote | 8pt | FONT.regular | `#5A5F69` |
+| 표지 대형 타이포 | **70pt** | FONT.exbold/black | `#FFFFFF` |
+| 표지 부제 | **22pt** | FONT.medium | `#B0BEC5` |
+| THANK YOU 클로징 | **88pt** | FONT.exbold | `#FFFFFF` |
+| 디바이더 거대 제목 | **56pt** | FONT.exbold | `#FFFFFF` (키워드만 주황) |
+| 메인 헤드라인 | **28pt** | FONT.exbold | `#FFFFFF` (키워드만 주황) |
+| 카드 내 큰 타이틀 | **22pt** | FONT.exbold | `#FFFFFF` |
+| KPI 큰 숫자 | **36~56pt** | FONT.exbold | `#34C77B` 에메랄드 |
+| 카드 내 헤딩 | **18pt** | FONT.exbold/semibold | `#FFFFFF` |
+| 듀얼 카드 헤더 | **14pt** | FONT.semibold | `#FFFFFF` (배경이 색) |
+| KPI 증감률 / 부제 | **14pt** | FONT.bold | `#DD5C28` 주황 또는 `#B0BEC5` |
+| 본문 | **12 ~ 14pt** | FONT.regular/medium | `#FFFFFF` 또는 `#B0BEC5` |
+| 영문 라벨 / 챕터 칩 | **10 ~ 12pt** | FONT.bold | `#FFFFFF` 또는 `#8A8F99` |
+| 캡션·메타 | **10 ~ 12pt** | FONT.regular | `#8A8F99` |
+| 출처/footnote | **9pt** | FONT.regular | `#7A7F8A` (WCAG AA 4.5:1) |
 
 ### 색상 (3색 시스템 + 중첩 4단 + 보더)
 
@@ -151,7 +164,7 @@ const COLOR = {
   text:      "FFFFFF",  // 흰색 — 헤드라인·본문 기본
   textSub:   "B0BEC5",  // 라이트 블루그레이 — 부제·본문 보조
   textDim:   "8A8F99",  // 미디엄 그레이 — 캡션·라벨·메타
-  textMeta:  "5A5F69",  // 다크 그레이 — footnote
+  textMeta:  "7A7F8A",  // WCAG AA 4.5:1 (footnote/source용)  // 다크 그레이 — footnote
 };
 ```
 
@@ -496,6 +509,25 @@ await sharp("input.png").composite([{input: mask, blend: "dest-in"}]).png().toFi
 
 ---
 
+## 자가 비평 루틴 (I Like / I Wish / What If)
+
+각 Phase Gate에서 시안과 함께 자가 회고 3줄 동봉:
+
+- **I Like** — 이 시안에서 의도대로 잘 풀린 강점 1가지
+- **I Wish** — 이번 단계에서 다 못 다룬 한계 1가지
+- **What If** — 다음 Phase에서 시도해볼 만한 대안 1가지
+
+**원칙**: 비평자(AI)는 문제·관찰만 제시, 해법 강요 X. 사용자가 결정자(Pixar Braintrust 권한 없는 자문 원칙).
+
+**예시** (DualLab Phase 2 시안 제출 시):
+> - I Like: 14장 컴팩트로 미팅 시간 60-90분에 맞춤
+> - I Wish: 6단계 워크플로우 분담을 미리 표기하지 않은 결정의 trade-off가 발표 시 어색할 수 있음
+> - What If: 디바이더 제거로 12장까지 더 줄이면 핵심에 더 집중 가능
+
+근거: Stanford d.school "I Like/I Wish/What If" — 비평자 감정·제안 분리로 수신자 방어 모드 회피.
+
+---
+
 ## 자매 스킬과의 관계
 
 | 스킬 | 톤 | 배경 | 액센트 | 카드 | 강조 | 용도 |
@@ -514,3 +546,10 @@ await sharp("input.png").composite([{input: mask, blend: "dest-in"}]).png().toFi
 | `references/layout-patterns.md` | 패턴 A-T 인덱스 + 텍스트 아트 예제 (자매 스킬 공통). 색·보더·폰트는 본 SKILL.md 토큰/규칙으로 오버라이드하고 **이탤릭은 모두 정자체로 변환** |
 | `assets/hnc-logo-white.png` | 흰색 워드마크 + 주황 H — **다크 배경 기본** (1200×264, 비율 4.55:1) |
 | `assets/hnc-logo-black.png` | 검은색 워드마크 + 주황 H — 흰 카드·라이트 면 위 예외용 |
+
+## 방법론 리서치 (이론 근거)
+
+| 파일 | 용도 |
+|------|------|
+| `~/Workspace/work/outputs/research/20260529_presentation_design_methodology.md` | 시각·내러티브·정보·전달 4축 원칙. Minto Pyramid·Duarte Story Arc·Tufte Data-Ink·Reynolds Presentation Zen 등 |
+| `~/Workspace/work/outputs/research/20260529_design_improvement_methodology.md` | 비평·휴리스틱·이터레이션 개선 사이클. 본 스킬의 3-Phase + Gate + 자가 비평 루틴의 근거 |
