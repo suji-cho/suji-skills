@@ -31,6 +31,8 @@ Or browse and install interactively:
 /suji-ppt-dark-orange      # 다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 모노톤 CEO 보고용 PPTX 생성
 /suji-ppt-dark-trio        # 다크 배경 + 주황(#DD5C28) 주조 + 블루·에메랄드 서브 2색 글로벌 파트너 제안용 PPTX 생성
 /suji-ppt-light-trio       # 라이트 배경 + 주황(#E8500F) 주조 + 블루·에메랄드 서브 2색 글로벌 파트너 제안용 PPTX 생성
+/suji-ppt-dark-premium     # 다크 프리미엄(Linear/Notion 톤) PPTX — HTML 렌더 배경 + 네이티브 편집 하이브리드, 인디고(#A9B2FF) 단일 액센트
+/suji-ppt-light-premium    # 라이트 프리미엄(29CM/Stripe 톤) PPTX — dark-premium의 라이트 변종, 인디고(#5B63D6) 단일 액센트
 ```
 
 ## Auto-Update
@@ -71,6 +73,8 @@ Or enable auto-update permanently in `~/.claude/settings.json`:
 | [suji-ppt-dark-orange](./skills/suji-ppt-dark-orange) | 다크 배경 + 주황(#FC5E20) 단독 액센트 + 그레이 4단조의 CEO·임원 보고용 모노톤 PPTX 생성 — Pretendard, 거대 타이포 표지·PART 챕터 디바이더·수치 비교 행 시그니처 패턴 |
 | [suji-ppt-dark-trio](./skills/suji-ppt-dark-trio) | 다크 배경 + 주황(#DD5C28) 주조 + 스카이블루(#4A8FE0)·에메랄드(#34C77B) 서브 2색의 글로벌 파트너 제안용 PPTX — 중첩 보더 카드 시그니처, 패턴 A~T 공유 + trio 고유 U~Z |
 | [suji-ppt-light-trio](./skills/suji-ppt-light-trio) | 라이트 배경 + 주황(#E8500F) 주조 + 스카이블루(#2E72C8)·에메랄드(#1FA968) 서브 2색의 글로벌 파트너 제안용 PPTX — dark-trio의 라이트 변종, 색·명도 토큰만 반전 |
+| [suji-ppt-dark-premium](./skills/suji-ppt-dark-premium) | 다크 프리미엄(Linear·Notion 톤) PPTX — **하이브리드**: HTML/CSS 렌더 다크 글로우 배경(에셋) + pptxgenjs 네이티브 텍스트·차트(PowerPoint 편집 가능). 큰 타이포 + 인디고(#A9B2FF) 단일 액센트, waterfall·price ladder·동심원 컴포넌트. 경영 보고·임팩트 |
+| [suji-ppt-light-premium](./skills/suji-ppt-light-premium) | 라이트 프리미엄(29CM·Stripe 톤) PPTX — dark-premium의 라이트 변종(색·배경·로고만 반전). 흰 배경 + 미세 그림자 + 인디고(#5B63D6) 단일 액센트. 공식 보고·인쇄 친화 |
 
 ### suji-confluence-publish
 
