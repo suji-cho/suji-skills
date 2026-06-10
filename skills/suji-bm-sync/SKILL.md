@@ -1,15 +1,17 @@
 ---
 name: suji-bm-sync
-description: ODL BM 인바운드 리드 동기화. Gmail OSS/BIZ contact 라벨에서 신규·갱신 메일을 수집하고, 운영 기준 v2.1 + 사업성 v1.2를 적용해 5개 Confluence 페이지(A 대시보드·B 보고용·C 흐름·D 기준·E 매핑)를 갱신한다. 수동 호출 + 매일 08:00 cron 자동 실행.
+description: ODL BM 인바운드 리드 동기화. Gmail OSS/BIZ contact 라벨에서 신규·갱신 메일을 수집하고, 운영 기준 v2.2 + 사업성 v1.3을 적용해 5개 Confluence 페이지(A 대시보드·B 보고용·C 흐름·D 기준·E 매핑)를 갱신한다. 수동 호출 + 매일 08:00 cron 자동 실행.
 ---
 
-# /suji-bm-sync (v2.1)
+# /suji-bm-sync (v2.2)
 
 OpenDataLoader BM 인바운드 리드를 매일 아침 트리아지하기 위한 동기화 스킬.
 Gmail OSS/BIZ contact 라벨을 단일 데이터 소스로 5개 Confluence 페이지(A·B·C·D·E)에 반영한다.
-운영 기준 v2.1(Stage 11+Partnership · Status 4-tier · 프리픽스 12+종료 2 · 이탈 게이트 4)과
-사업성 v1.2(45/35/20 + 자동 +1 룰 + 지역 보정)를 적용해 모든 자동 산정값은 🔍 검토 태그로 표기,
+운영 기준 v2.2(Stage 11+Partnership · **Status 6값** · 프리픽스 12 + Cold sub-prefix · **cold 게이트 4** · **그룹 진행 중/주요 콜드/일반 cold**)와
+사업성 v1.3(**4축 30/35/15/20 + 실행 가능성** + 자동 +1 룰 + 지역 보정)을 적용해 모든 자동 산정값은 🔍 검토 태그로 표기,
 사용자 승인 후에만 Confluence를 갱신한다.
+
+> **🗄️ DB SoT 전환 (2026-06-09):** 케이스 데이터의 SoT는 **BM CRM DB(Postgres·Prisma, repo `bm-crm`)**. Confluence A·B·E는 DB의 외부 publish target(미러). 이 스킬의 산정·전이 로직은 유지하되, 정본 카운트·status·group·active_deal은 **DB가 최종 기준**. (구 "Confluence A 파싱 = state" 모델 → DB read로 점진 전환. Phase 0b backend 연동 시 완성.)
 
 ## 트리거
 
@@ -51,43 +53,56 @@ Gmail OSS/BIZ contact 라벨을 단일 데이터 소스로 5개 Confluence 페�
 
 Partnership 트랙: 인입 → 협의 → 합의 → 운영 (영업 깔때기 외)
 
-### Status 4-tier
+### Status 6값 (2026-06-09)
 
-- **우리 차례** (Blue 600) — 다음 외부 액션 우리
-- **상대 차례** (Amber 600) — 우리 답신 후 상대 응답 대기
-- **요구사항 확인 완료** (Purple 600) — 외부 요구사항 파악 끝, 우리 내부 작업 중
-- **종료** (Slate 500) — 이어갈 요구사항 없음 / 콜드 메일 라인업 (별도 종료 통보 X · Phase 0에서는 break-up 메일도 X)
+DB enum `Status` 1:1. Stage(흐름 위치)와 별개의 "대화 상태" 축.
 
-### 프리픽스 12개 + 종료 사유 2개
+- **우리 차례** (ours · Blue 600) — 다음 외부 액션 우리
+- **상대 차례** (theirs · Amber 600) — 우리 답신 후 상대 응답 대기. 임계 도달 시 자동 Cold
+- **요구사항 확인 완료** (internal · Purple 600) — 외부 요구사항 파악 끝, 우리 내부 작업 중
+- **우리 측 보류** (on_hold · Slate 400 · 2026-06-09 신규) — 고객 무응답 아님, 우리 측 로드맵·작업 대기로 정체
+- **Cold** (cold · Cyan 600 · 2026-06-09 신규) — 계약 전 정체 (무응답·1차판단 등). 별도 종료 통보 X (Phase 0)
+- **계약 종료** (closed · Slate 500) — **계약 후** 해지 전용. 계약 전엔 "종료" 없음 → 정체는 Cold, 우리 측 대기는 우리 측 보류 ([[feedback_odl_bm_cold_framing]])
 
+> **active_deal(운영 중 딜):** 진행 중(active) 그룹에서 활발히 진전 중인 딜(샘플 평가→PoC·조건 합의→가격 결재 등)을 별도 boolean 플래그로 표시 — 임계 기다리는 수동 답변 대기와 구분. (예: Félix·Andrew Sauer)
+
+### 프리픽스 12개 + Cold sub-prefix
+
+진행 프리픽스 12개:
 `[신규]` `[샘플처리 대기]` `[샘플 요청]` `[가격 답변 대기]` `[라이센스 답변 대기]`
 `[기본 정보 요청]` `[기본 정보 답변 대기]` `[요구사항 논의 중]` `[스폰서십 제안 검토]`
 `[요구사항 파악 완료]` `[PoC 응답 대기]` `[상세 정보 답변 대기]`
 
-종료 사유 (2026-05-20 리프레이밍): `[이어갈 요구사항 없음]` (배제) · `[콜드 메일 라인업]` (콜드 메일 라인업)
+**Cold sub-prefix (사유 분류 · DB SoT 하이픈 표기):** `[Cold-1차판단]` `[Cold-무응답]` `[Cold-우리측보류]` `[Cold-PoC]` `[Cold-MSA]`
+**cross-tag:** `[주요 콜드 대상]` (재engagement 가치 — 주요 콜드 분류)
 
-### 이탈 게이트 4개
+> ⚠️ criteria v1.3·Cold 정책 v2 문서는 중점 표기(`[Cold·무응답]`)·`[주요 콜드 라인업]`을 사용 (표기 드리프트). DB·Confluence 정본 = 하이픈·`[주요 콜드 대상]`.
 
-- 이탈 #1: 1차 판단 실패 → 종료 또는 미정
-- 이탈 #2: 기초 협상 실패(21일+ 무응답) → 콜드 리스트
-- 이탈 #3: PoC 평가 실패 → Nurturing
-- 이탈 #4: MSA 협상 실패 → Lost·콜드 후보
+### cold 게이트 4개
 
-### 그룹
+- cold #1: 1차 판단 cold → 일반 cold 또는 미정
+- cold #2: 기초 협상 cold (무응답 21일+ 페이지 A 가시화 → 산업·유형별 임계 도달 시 자동 cold)
+- cold #3: PoC 평가 cold → 주요 콜드(재핑 가능)
+- cold #4: 주계약서(MSA) 협상 cold → Lost·주요 콜드 후보
 
-- **Active** — Stage 1~10 + Partnership, Status 우리/상대 차례
-- **콜드 메일 라인업** — Status 요구사항 확인 완료 + 종료(`[콜드 메일 라인업]`) 재시도 후보
-- **종료 (배제)** — Stage 11 이탈 + `[이어갈 요구사항 없음]`
+### 그룹 (DB CaseGroup 1:1 · 진행 중 / Cold 2-tier)
 
-## 사업성 v1.2 (요약)
+- **진행 중 (active)** — Stage 1~10 + Partnership. Status 우리/상대 차례·요구사항 확인 완료·우리 측 보류. active_deal 하위 플래그
+- **주요 콜드 (major_cold)** — 재시도 후보 (`[주요 콜드 대상]`). 핵심 타겟·재engagement 가치
+- **일반 cold (general_cold)** — `[Cold-1차판단]`·`[Cold-무응답]` (재engagement 가치 낮음)
 
-자세한 산식은 페이지 D 또는 `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.2_20260519/` 참조.
+## 사업성 v1.3 (요약)
 
-### 점수 모델 (100점)
+자세한 산식은 페이지 D 또는 `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.3_20260601/` 참조.
 
-- **수익률 45**: 볼륨 15 + 조직 규모 12 + 도입 긴급도 8 + 도입 의지 10
-- **네임밸류 35**: 조직 인지도 15 + 섹터 대표성 10 + 규제 시장 10
-- **확산력 20**: 섹터 파급 8 + 파트너 채널 6 + 규제 연쇄 6
+### 점수 모델 (100점 · cap 해제 시 100+)
+
+- **수익률 30** (v1.2 45→30): 볼륨 15 + 조직 규모 15. *도입 긴급도·도입 의지는 축 4로 이전*
+- **네임밸류 35** (유지): 조직 인지도 15 + 섹터 대표성 10 + 규제 시장 10
+- **확산력 15** (v1.2 20→15): 섹터 파급 6 + 파트너 채널 5 + 규제 연쇄 4
+- **실행 가능성 20** 🆕: 실현가능성 7 (6 sub-criteria — 규제·데이터통제·품질·처리량·비용) + 적극성 8 + 데드라인 5
+
+> "지금 진행 가능한가?" 변별. 같은 사업성 점수라도 active_deal vs 보류 구분. `total_score`(v1.3 합산)는 cap 해제로 100+ 가능. `biz_score`(구모델)와 충돌 시 재산정 보류 = 운영 데이터 트랙(거버넌스).
 
 ### 컷오프
 
@@ -127,21 +142,27 @@ b2x                 B2B / B2G / B2E / B2C / Partnership / —
 org                 소속명
 phase               Phase 0/1/2/3 (사업 시간축, 헤더 표시용)
 stage               11단계 + Partnership 트랙
-status              우리/상대/요구사항 확인 완료/종료 (4-tier)
-prefixes            컨텍스트 프리픽스 list (12개 사전)
-biz_priority        P1 / P2 / P3 / 미정
-biz_score           0~100 (v1.2 모델)
-auto_p_boost        자동 +1 적용 여부 (v1.2 핵심 타겟 룰)
-pm_p_adjust         PM +1 수동 조정 사유 (스트링)
+status              우리 차례/상대 차례/요구사항 확인 완료/우리 측 보류/Cold/계약 종료 (6값)
+prefixes            컨텍스트 프리픽스 list (12개 + Cold sub-prefix)
+biz_priority        P1 / P2 / P3 / 미정 / Partnership
+biz_score           0~100 (구모델 — head·list·KPI 표시용 유지)
+total_score         v1.3 4축 합산 (cap 해제 100+) — 산정표·E 페이지 기준
+auto_p_boost        자동 +1 적용 여부 (핵심 타겟 룰)
+pm_p_adjust         PM +1 수동 조정 단계 (int) / pm_p_reason 사유
+active_deal         운영 중 딜 (boolean · 진행 중 그룹 내 활발 진전)
+key_cold_lineup     재engagement 가치 (boolean · 주요 콜드 cross-tag)
+cold_reason         Cold 사유 (스트링)
 last_inbound_date   상대 마지막 발신일
 last_outbound_date  우리 마지막 발신일
 last_action_date    max(둘 중)
 waiting_days        오늘 - last_action_date
+threshold_days      산업·유형별 자동 cold 임계 (B2G/B2E 120·SaaS 90·SMB 60)
+threshold_remaining 임계까지 남은 일수 (도달 시 자동 cold)
 context             1줄 컨텍스트 요약
 next_action         우리 다음 액션
 needs_review        🔍 검토 필요 여부
-exit_gate           이탈 시 #1/#2/#3/#4
-group               Active / 콜드 메일 라인업 / 종료 (배제)
+exit_gate           cold 시 #1/#2/#3/#4
+group               진행 중(active) / 주요 콜드(major_cold) / 일반 cold(general_cold)
 ```
 
 ---
@@ -159,11 +180,12 @@ mcp__claude_ai__getConfluencePage
 
 페이지 A에서 파싱:
 - 섹션 0 ASCII art (현재 케이스 위치 분포)
-- 섹션 1 카운트 표 (Active N · 콜드 메일 라인업 M · 종료 J · 신규 평가 L)
-- 섹션 3 Active 케이스 Stage별 토글 내 케이스 리스트
-- 섹션 4 콜드 메일 라인업 케이스
-- 섹션 5 종료 (배제) 케이스
-- 섹션 6 Decision Log (최근 10건)
+- 섹션 1 카운트 표 (진행 중 N · 주요 콜드 M · 일반 cold J · 신규 평가 L · ↳ 운영 중 딜)
+- 섹션 3 진행 중 케이스 Stage별 토글 내 케이스 리스트
+- 섹션 4 주요 콜드 케이스
+- 섹션 5 일반 cold 케이스
+- 섹션 6 마케팅·미디어 (별도, 비-케이스)
+- 섹션 7 Decision Log (최근 10건)
 
 페이지 E에서 파싱:
 - 각 케이스별 점수 산정 결과 + 자동/PM 조정 사유 + 최종 P
@@ -211,10 +233,11 @@ mcp__claude_ai_Gmail__get_thread
   │   ├─ 정보 부족 → 미정 · Stage 1차 판단 · [신규]
   │   └─ 통과 → 점수 모델 진입
   │
-  ├─ 점수 모델 (v1.2)
-  │   ├─ 수익률 (볼륨·조직 규모·긴급도·도입 의지)
-  │   ├─ 네임밸류 (인지도 + 지역 보정 + 섹터 대표성 + 규제)
-  │   └─ 확산력 (섹터 파급·파트너 채널·규제 연쇄)
+  ├─ 점수 모델 (v1.3 · 4축)
+  │   ├─ 수익률 30 (볼륨·조직 규모)
+  │   ├─ 네임밸류 35 (인지도 + 지역 보정 + 섹터 대표성 + 규제)
+  │   ├─ 확산력 15 (섹터 파급·파트너 채널·규제 연쇄)
+  │   └─ 실행 가능성 20 (실현가능성 6 sub + 적극성 + 데드라인)
   │
   ├─ 자동 +1 룰 검사
   │   └─ 섹터 대표성 ≥ 8 + 총점 40~69 → P2 → P1, auto_p_boost=True
@@ -241,9 +264,12 @@ mcp__claude_ai_Gmail__get_thread
 
 12개 프리픽스 사전(`HANDOFF.md` 섹션 3-3) 기준 메일 본문·컨텍스트 매칭. 다중 프리픽스 허용.
 
-#### 3-D. Stale 감지 (21일+ 무응답)
+#### 3-D. Stale 감지 (무응답 트래킹 + 임계 자동 cold)
 
-`waiting_days >= 21` + `status == 상대 차례` → 콜드 후보, `exit_gate=#2` 후보, 그룹 `콜드 메일 라인업` 라인업 제안.
+- `waiting_days >= 21` + `status == 상대 차례` → 페이지 A 무응답 트래킹 표 가시화 (임계 미달도 모니터). `threshold_remaining` 표시.
+- `waiting_days >= threshold_days`(산업·유형별: B2G/B2E 120·SaaS 90·SMB 60) **AND** 마지막 발신=우리 → **자동 Cold**(`status=Cold`·`group=일반 cold`·`[Cold-무응답]`), `exit_gate=#2`. 재engagement 가치 시 `[주요 콜드 대상]`·`group=주요 콜드`.
+- 보조 룰(v1.3): `적극성 ≤ 2 + 무응답 60일+` → 임계 미달이어도 자동 Cold.
+- ⚠️ "Active 어수선하니 임의로 cold" 수동 디클러터 **금지** — 무응답 Cold는 임계/보조 룰 트리거로만 (Cold 정책 v2 §11).
 
 #### 3-E. Next Action 제안
 
@@ -254,13 +280,14 @@ Status가 `우리 차례` 또는 `요구사항 확인 완료`인 케이스만:
 #### 3-F. 그룹 자동 분류
 
 ```
-if stage == 11 이탈 and prefix == [이어갈 요구사항 없음]:
-    group = 종료 (배제)
-elif status == 요구사항 확인 완료 or (stage == 11 이탈 and prefix == [콜드 메일 라인업]):
-    group = 콜드 메일 라인업
-else:
-    group = Active
+if status == Cold:                          # 계약 전 정체
+    group = 주요 콜드   if key_cold_lineup (재engagement 가치)  # [주요 콜드 대상]
+    group = 일반 cold  otherwise            # [Cold-1차판단]·[Cold-무응답]
+else:                                        # 우리/상대 차례·요구사항 확인 완료·우리 측 보류
+    group = 진행 중 (active)                 # active_deal·Partnership 트랙 포함
 ```
+
+> "종료"는 계약 후 전용(현재 0건). 계약 전 정체는 모두 Cold. 우리 측 보류(on_hold)는 진행 중 그룹 유지(고객 무응답 아님).
 
 ### Step 4. 변경 diff 생성
 
@@ -283,14 +310,14 @@ else:
 ### 프리픽스 변경 (L건) 🔍
 - [이름]: [기본 정보 답변 대기] → [요구사항 논의 중]
 
-### Stale·이탈 진입 (P건) 🔍
-- [이름]: 상대 차례 21일+ → 이탈 #2 후보 / 콜드 메일 라인업
+### Stale·cold 진입 (P건) 🔍
+- [이름]: 상대 차례 + 무응답 임계 도달 → 자동 Cold (cold #2 · [Cold-무응답]) / 재engagement 가치 시 [주요 콜드 대상]
 
 ### Next Action 제안 (Q건) 🔍
 - [이름]: 답신 작성 + 가격 안내 첨부
 
 ### 그룹 이동 (R건) 🔍
-- [이름]: Active → 콜드 메일 라인업
+- [이름]: 진행 중 → 주요 콜드 / 일반 cold (또는 재응답 시 Cold → 진행 중 복귀)
 ```
 
 모든 항목에 `🔍 검토` 표기. 항목별 인덱스(`[1]`, `[2]`...) 부여해 사용자가 선택적으로 거부 가능하도록.
@@ -339,24 +366,25 @@ mcp__claude_ai__updateConfluencePage
    - 단계 간 화살표
 
 📊 1. 오늘의 즉답 패널
-   1-1. 카운트 표 (Active N · 콜드 메일 라인업 M · 종료 J · 신규 평가 L)
-   1-2. 🚨 오늘 회신 / 🆕 신규 평가 / ⚠️ 21일+ 무응답
+   1-1. 카운트 표 (진행 중 N · ↳ 운영 중 딜 · 주요 콜드 M · 일반 cold J · 신규 평가 L · 합계)
+   1-2. 🚨 오늘 회신(우리 차례) / 🔥 운영 중 딜 / ⚠️ 무응답 트래킹(임계까지 남은 일수)
 
 🆕 2. Triage Queue (1차 판단 대기)
    이름·조직 · 수신일 · Gate · 잠정 점수 · 잠정 P
 
-🔵 3. Active 케이스 (Stage별 토글)
-   1차 판단 / Sample / 기초 협상 / PoC / Pilot 협상 /
-   Pilot / MSA 협상 / Partnership 협의
+🔵 3. 진행 중 케이스 (Stage별 토글)
+   1차 판단 / Free Sample / 기초 협상 / PoC / Pilot 협상 /
+   Pilot / 주계약서(MSA) 협상 / Partnership (Alisa·TEUM)
 
-🟣 4. 콜드 메일 라인업
-   요구사항 확인 완료 + Nurturing 통합
+🟣 4. 주요 콜드 (재시도 후보 [주요 콜드 대상])
 
-⚪ 5. 종료 (배제) [토글 기본 접힘]
+⚪ 5. 일반 cold [토글 기본 접힘]
 
-✅ 6. Decision Log (최근 10건)
+🎯 6. 마케팅·미디어 (별도, 비-케이스)
 
-🟦 7. md 줄글 (복붙용 — 보고·메시지)
+✅ 7. Decision Log (최근 10건)
+
+🟦 8. md 줄글 (복붙용 — 보고·메시지)
 ```
 
 **섹션 0 ASCII art 포맷 예시:**
@@ -368,9 +396,9 @@ mcp__claude_ai__updateConfluencePage
                             ├─ Félix, David, Noah
                             │              ├─ Dragan, Sauer, Russell, Pratek, Timothy, Ray, Ken
 
-Partnership: 협의 [1] (Alisa) → 합의 [0] → 운영 [0]
-이탈 #1 [8] · #2 [0] · #3 [0] · #4 [0]
-콜드 메일 라인업 [2]
+Partnership: 협의 [2] (Alisa·TEUM) → 합의 [0] → 운영 [0]
+⑪ cold [N]: 주요 콜드 [M] · 일반 cold [J]
+🔥 운영 중 딜: Félix·Andrew Sauer
 ```
 
 코드블록 안에 monospace로 렌더링. 인포그래픽 PNG는 별도 태스크(placeholder만 유지).
@@ -387,24 +415,24 @@ mcp__claude_ai__updateConfluencePage
 
 #### 6-C. 페이지 C `비즈니스 흐름` (정의 변경 시만)
 
-운영 기준 v2.1 정의 변경이 감지되면 갱신. 매 sync에서는 건너뜀.
+운영 기준 v2.2 정의 변경이 감지되면 갱신. 매 sync에서는 건너뜀.
 
 - 11단계 정의·진입/전이 조건·주 담당·색 토큰
-- 이탈 게이트 #1~#4 진입 조건·후속 처리
-- **Partnership / Marketing 공통 트랙** (탐색·협의·합의·운영 / Discovery·Engagement·Activation·Acceleration)
-- 인포그래픽 매크로: 🛡️ 보존 룰 적용 (att2153153061 첨부됨 — placeholder로 덮어쓰기 금지)
+- cold 게이트 #1~#4 진입 조건·후속 처리 + Status 6값 연계 노트
+- **파트너십·마케팅 공통 트랙** (탐색·협의·합의·운영 / Discovery·Engagement·Activation·Acceleration)
+- 인포그래픽 매크로: 🛡️ 보존 룰 적용 (figure media `data-id=f72dd1d2…` 보존 — placeholder로 덮어쓰기 금지)
 
 #### 6-D. 페이지 D `사업성 및 우선순위 평가 기준` (정의 변경 시만)
 
-운영 기준 v2.1 + 사업성 v1.2 정의 변경 시만 갱신.
+운영 기준 v2.2 + 사업성 v1.3 정의 변경 시만 갱신.
 
-- 운영 기준 4종 v2.1 (Stage·Status·프리픽스·이탈 게이트)
-- 점수 모델 (45/35/20)
-- 컷오프 + 자동 +1 룰 + 지역 보정 + 비주류 섹터
-- 우선순위 매핑 룰
-- 검증 22건 상세 + 변경 이력 v1.0→v1.1→v1.2 + 근거 자료 (2107052902 통합)
-- 인포그래픽 매크로: 🛡️ 보존 룰 적용 (att2151941196 첨부됨)
-- **종료 사유 명칭**: `[이어갈 요구사항 없음]` (구 `[사업성 없음]` 폐기) · `[콜드 메일 라인업]` (구 `[콜드 메일 필수]` 폐기) — 2026-05-20 리프레이밍
+- 운영 기준 4종 v2.2 (Stage·**Status 6값**·프리픽스+Cold sub-prefix·**cold 게이트**)
+- 점수 모델 (**30/35/15/20 4축** + 실행 가능성)
+- 컷오프 + 자동 +1 룰 + 지역 보정 + 비주류 섹터 + Buyer Persona
+- 우선순위 매핑 룰 (cap 해제)
+- 검증표(v1.2 historical 병기) + 변경 이력 v1.0→v1.3 + 근거 자료
+- 인포그래픽 매크로: 🛡️ 보존 룰 적용 (figure media `data-id` 보존 — D=`57bc335e…`)
+- **Cold sub-prefix**: `[Cold-1차판단]` `[Cold-무응답]` `[Cold-우리측보류]` · cross-tag `[주요 콜드 대상]` (구 `[이어갈 요구사항 없음]`·`[콜드 메일 라인업]` 폐기)
 
 #### 6-E. 페이지 E `인바운드별 우선순위 매핑 상세` (매 sync)
 
@@ -415,9 +443,9 @@ mcp__claude_ai__updateConfluencePage
 ```
 
 표 컬럼:
-- 케이스 ID · 이름·조직 · 국가·B2X · 수익률(45) · 네임밸류(35) · 확산력(20) · 총점 · auto_p_boost · pm_p_adjust · 최종 P · 사유 한 줄
+- 이름·조직 · 국가·B2X · Stage · 세부(수익률 30 / 네임밸류 35 / 확산력 15 / 실행 가능성 20) · 총점(total_score) · 잠정 P · auto_p_boost · pm_p_adjust · 사유 한 줄
 
-자동 +1 적용 케이스는 행 강조. PM 조정 케이스는 사유 명기.
+자동 +1 적용 케이스는 행 강조. PM 조정 케이스는 사유 명기. Partnership(Alisa)은 파트너십·마케팅 모델(브랜드/리드/비용). 미산정(일반 cold gate·TEUM 보류)은 "—".
 
 ### Step 7. cron 자동 실행
 
@@ -512,18 +540,31 @@ if m:
 - **수동 작업 투명성.** 자동화 안 되는 항목(인포그래픽 PNG·Mermaid 매크로 미지원 시 대체 등)은 미리 알리고 사유 설명.
 - **Gmail 인증.** 키체인 제한 시 handoff 안내. 본 스킬은 MCP Gmail 도구 우선 사용 (`mcp__claude_ai_Gmail__*`).
 - **lock 파일.** cron 모드에서는 `/tmp/suji-bm-sync.lock` 확인. 동시 실행 방지.
-- **첫 sync 가이드.** 페이지 A·E가 비어 있는 상태에서는 시드 데이터 22건을 Step 3-A 신규 리드 평가로 처리. 사용자 확인 후 한 번에 입력.
+- **첫 sync 가이드.** 페이지 A·E가 비어 있는 상태에서는 시드 데이터(현 정본 23건)를 Step 3-A 신규 리드 평가로 처리. 사용자 확인 후 한 번에 입력. (정본·status·group·active_deal 최종 기준 = BM CRM DB)
 
 ## 참조 자료
 
 - **HANDOFF v2.1:** `/Users/sujicho/Workspace/work/project/project_todo/bm-sync-redesign/HANDOFF.md` (운영 기준 + 와이어프레임 + 마이그레이션)
-- **사업성 v1.2:** `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.2_20260519/20260519_ODL BM 리드 사업성 판단 기준 v1.2.md`
-- **사업성 v1.1 (직전):** `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.1_20260514/`
+- **사업성 v1.3 (현행):** `/Users/sujicho/Workspace/work/outputs/odl_business/governance/criteria/v1.3_20260601/20260601_ODL BM 리드 사업성 판단 기준 v1.3.md`
+- **Cold 정책 v2.1:** `/Users/sujicho/Workspace/work/outputs/odl_business/governance/policy/20260601_Cold_무응답_자동_이동_정책_v2.md`
+- **사업성 v1.2 (per-case 검증):** `…/governance/criteria/v1.2_20260519/`
+- **DB SoT (bm-crm):** `/Users/sujicho/Workspace/work/project/project_todo/bm-crm/` (prisma/schema.prisma·seed-source.json)
 - **figma 순서도:** https://www.figma.com/board/JcjgcBk4YupmXr4CnISIqb/ODL-BM-순서도
 - **ODL Design System:** `~/Workspace/work/outputs/methodology/design_systems/odl/`
 - **로컬 tracker (마이그레이션 후 archive):** `~/Workspace/work/outputs/odl_business/contacts/biz_contact_tracker.md`
 
 ## 변경 이력
+
+### v2.2 (2026-06-09~10) — DB SoT 전환 + Status 6값 + 사업성 v1.3 + 2-tier 그룹 정합
+
+- **Status 4-tier → 6값**: 우리 차례·상대 차례·요구사항 확인 완료·**우리 측 보류**·**Cold**·계약 종료. DB enum 1:1. "종료"=계약 후 전용 격하
+- **그룹 3-group → 진행 중/주요 콜드/일반 cold** (DB CaseGroup 1:1). 구 Active/콜드 메일 라인업/종료 배제 폐기
+- **`active_deal` 운영 중 딜 플래그** + **threshold_days/remaining** (무응답 임계 트래킹) 데이터 모델 추가
+- **사업성 v1.2 → v1.3**: 4축 30/35/15/20 + 실행 가능성(실현·적극·데드라인) + cap 해제 + Buyer Persona. `total_score` 추가
+- **이탈 게이트 → cold 게이트**, "이어갈 요구사항 없음"→일반 cold, 종료 사유 prefix → **Cold sub-prefix**(`[Cold-무응답]` 등 하이픈)·cross-tag `[주요 콜드 대상]`
+- **무응답 Cold = 임계/보조 룰 자동 트리거** (수동 디클러터 폐기, Cold 정책 v2 §11). Step 3-D 갱신
+- **DB SoT 전환**: 정본·status·group·active_deal 최종 기준 = BM CRM DB. Confluence A·B·E는 외부 publish target
+- 2026-06-10 Confluence 5p(A·B·C·D·E) 정합 완료 (정본 23/13/2/8 · D v1.3 · P/M→파트너십·마케팅 · 매크로 보존)
 
 ### v2.1.2 (2026-05-27) — Gmail 쿼리·발신 방향 판정 검증 캐비엇
 
