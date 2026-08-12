@@ -26,7 +26,7 @@ Bases 월간요약.base (실시간 대시보드)
 
 | 커맨드 | 용도 |
 |--------|------|
-| `/suji-work-minute` | 오늘 노트 생성 + 할일 수집 (캐리오버+월간TODO+프로젝트카드) |
+| `/suji-work-minute` | 오늘 노트 생성 + 할일 수집 (캐리오버+월간TODO+프로젝트 TODO 문서) |
 | `/suji-work-minute yesterday` | 어제 노트 후속 입력 |
 | `/suji-work-minute close` | 마감 정리 (공수 합산, projects 매칭, 8h 미만 경고) |
 | `/suji-work-minute mbo` | 이번 달 월별 취합 리스트 |
@@ -72,7 +72,7 @@ projects: []
 
 ## 워크플로우 요약
 
-- **아침**: `/suji-work-minute` → 어제 캐리오버 + 월간TODO + 프로젝트카드에서 할일 수집 → 의존성 상태 표시 (🟢 Ready / 🔴 Blocked)
+- **아침**: `/suji-work-minute` → 어제 캐리오버 + 월간TODO + 프로젝트 TODO 문서에서 할일 수집 → 의존성 상태 표시 (🟢 Ready / 🔴 Blocked)
 - **업무 중**: 사용자가 Obsidian에서 직접 편집
 - **마감**: `/suji-work-minute close` → 공수 합산, projects 매칭, 8h 미만 경고, 미완료 확인
 - **월말**: `/suji-work-minute mbo` → 전체 취합 리스트 생성
