@@ -1,7 +1,7 @@
 {
   "name": "suji-skills",
-  "version": "1.1.0",
-  "description": "Confluence publishing, CTO weekly report, BM sync, weekly biz inquiry tracker, ODL competitor/Medium page sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
+  "version": "1.2.0",
+  "description": "Confluence publishing, CTO weekly report, BM sync, team weekly report (biz inquiry tracker + task list), ODL competitor/Medium page sync, project doc structure, Claude Code guide, KB archive, meeting refine, daily MBO, reflection, work report",
   "author": {
     "name": "Suji Cho",
     "email": "waterland.cho@gmail.com"

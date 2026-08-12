@@ -23,7 +23,7 @@ Or browse and install interactively:
 /suji-confluence-publish   # ~/work/drafts 파일을 Confluence에 업로드
 /suji-cto-weekly-report    # CTO 주간보고 자동 수집 → 초안 생성 → 업로드
 /suji-bm-sync              # BM 보고서에 Gmail·GitHub 현황 동기화
-/suji-biz-weekly           # 제품 문의 대응 주간 현황 리스트 갱신 (Gmail 확인→v1.3 점수→코드블록 출력)
+/suji-team-report          # 팀 주간 리포트 합본 (Gmail 확인→v1.3 점수 제품 문의 현황 + 데일리 노트 압축 한일·할일)
 /suji-competitor-sync      # ODL 경쟁사 지표 Confluence 페이지 즉시 갱신
 /suji-medium-sync          # ODL Medium+Github 페이지 즉시 갱신
 /suji-doc-structure        # 프로젝트 문서 생성·정리·진단
@@ -66,7 +66,7 @@ Or enable auto-update permanently in `~/.claude/settings.json`:
 | [suji-confluence-publish](./skills/suji-confluence-publish) | ~/work/drafts 파일을 Confluence에 업로드 — 제목 컨벤션, 500px 중앙 레이아웃, frontmatter 제거 자동 적용 |
 | [suji-cto-weekly-report](./skills/suji-cto-weekly-report) | CTO 주간보고 작성 — competitor_tracker·PyPI·BM 보고서 데이터 자동 수집, 템플릿 기반 초안, Confluence 업로드 |
 | [suji-bm-sync](./skills/suji-bm-sync) | BM 보고서 동기화 — Gmail BIZ contact 신규 메일, GitHub Issues 미대응 현황, 회신 대기 일수를 Confluence에 자동 반영 |
-| [suji-biz-weekly](./skills/suji-biz-weekly) | 제품 문의 대응 주간 현황 리스트 갱신 — Gmail OSS/BIZ contact 라벨 확인, 신규 문의·회신 반영, criteria v1.3 점수 산정, 대기일 재계산, 고정 코드블록 양식 출력 |
+| [suji-team-report](./skills/suji-team-report) | 팀 주간 리포트 생성: 1부 제품 문의 대응 현황(Gmail OSS/BIZ contact 확인, 신규·회신 반영, criteria v1.3 점수 산정, 대기일 재계산) + 2부 한일·할일(데일리 노트 압축 리스트). 교차 반영·부속 정보 정리까지 |
 | [suji-competitor-sync](./skills/suji-competitor-sync) | ODL 경쟁사 지표 페이지 즉시 갱신 — competitor_tracker GitHub Actions 수동 trigger + watch + 결과 보고 |
 | [suji-medium-sync](./skills/suji-medium-sync) | ODL Medium+Github 페이지 즉시 갱신 — medium_confluence_sync GitHub Actions 수동 trigger + watch + 결과 보고 |
 | [suji-doc-structure](./skills/suji-doc-structure) | 프로젝트 문서 관리 — HANDOFF/design/TODO 등 표준 문서명 선택, 폴더 구조 세팅, 문서 간 연결 규칙 적용 |
