@@ -293,6 +293,7 @@ mbo 시 두 포맷 모두 파싱 가능해야 함.
 
 ## 관련
 
+- `/suji-team-report`: **팀 주간 리포트 상위 진입점.** `weekly` 결과 + biz-weekly를 합본 (팀 공유는 여기서)
 - `/suji-report`: KB logbooks 기반 성과 리포트 (이 스킬의 데이터를 참조 가능)
 - `/suji-meeting-refine`: 회의록 정리 (회의 항목의 작업내용과 연결)
 - `work/hand-ons/work_minutes/2026/monthly_task/`: 월간 TODO (할일 수집 소스)
