@@ -7,7 +7,7 @@ description: ODL BM 인바운드 리드 동기화. Gmail OSS/BIZ contact 라벨�
 
 OpenDataLoader BM 인바운드 리드를 매일 아침 트리아지하기 위한 동기화 스킬.
 Gmail OSS/BIZ contact 라벨을 단일 데이터 소스로 5개 Confluence 페이지(A·B·C·D·E)에 반영한다.
-운영 기준 v2.2(Stage 11+Partnership · **Status 6값** · 프리픽스 12 + Cold sub-prefix · **cold 게이트 4** · **그룹 진행 중/주요 콜드/일반 cold**)와
+운영 기준 v2.2(Stage 11 + R/S 2단계 + Partnership · **Status 6값** · 프리픽스 12 + Cold sub-prefix · **cold 게이트 4** · **그룹 진행 중/주요 콜드/일반 cold**)와
 사업성 v1.3(**4축 30/35/15/20 + 실행 가능성** + 자동 +1 룰 + 지역 보정)을 적용해 모든 자동 산정값은 🔍 검토 태그로 표기,
 사용자 승인 후에만 Confluence를 갱신한다.
 
@@ -83,7 +83,7 @@ DB enum `Status` 1:1. Stage(흐름 위치)와 별개의 "대화 상태" 축.
 - cold #1: 1차 판단 cold → 일반 cold 또는 미정
 - cold #2: 기초 협상 cold (무응답 21일+ 페이지 A 가시화 → 산업·유형별 임계 도달 시 자동 cold)
 - cold #3: PoC 평가 cold → 주요 콜드(재핑 가능)
-- cold #4: 주계약서(MSA) 협상 cold → Lost·주요 콜드 후보
+- cold #4: 주계약서(MSA)·R/S 협상 cold (배분율 합의 X 포함) → Lost·주요 콜드 후보
 
 ### 그룹 (DB CaseGroup 1:1 · 진행 중 / Cold 2-tier)
 
@@ -141,7 +141,7 @@ country             국가
 b2x                 B2B / B2G / B2E / B2C / Partnership / —
 org                 소속명
 phase               Phase 0/1/2/3 (사업 시간축, 헤더 표시용)
-stage               11단계 + Partnership 트랙
+stage               11단계 + R/S 2단계(R/S 협상·R/S 계약, 번호 없음) + Partnership 트랙
 status              우리 차례/상대 차례/요구사항 확인 완료/우리 측 보류/Cold/계약 종료 (6값)
 prefixes            컨텍스트 프리픽스 list (12개 + Cold sub-prefix)
 biz_priority        P1 / P2 / P3 / 미정 / Partnership
@@ -361,7 +361,7 @@ mcp__claude_ai__updateConfluencePage
    - 🔗 연관 페이지 (B·C·D·E)
 
 🌊 0. 비즈니스 흐름 내 고객 위치 (ASCII art, 매 sync 자동 갱신)
-   - 11단계 + Partnership 박스
+   - 11단계 + R/S 2단계 + Partnership 박스
    - 각 단계 박스 안에 케이스 이름 리스트 + 카운트
    - 단계 간 화살표
 
@@ -417,7 +417,7 @@ mcp__claude_ai__updateConfluencePage
 
 운영 기준 v2.2 정의 변경이 감지되면 갱신. 매 sync에서는 건너뜀.
 
-- 11단계 정의·진입/전이 조건·주 담당·색 토큰
+- 11단계 + R/S 2단계 정의·진입/전이 조건·주 담당·색 토큰
 - cold 게이트 #1~#4 진입 조건·후속 처리 + Status 6값 연계 노트
 - **파트너십·마케팅 공통 트랙** (탐색·협의·합의·운영 / Discovery·Engagement·Activation·Acceleration)
 - 인포그래픽 매크로: 🛡️ 보존 룰 적용 (figure media `data-id=f72dd1d2…` 보존 — placeholder로 덮어쓰기 금지)
